@@ -428,7 +428,7 @@ const controlHR = async (req, res) => {
     try {
         const { id, committee } = req.body;
 
-        await member.findByIdAndUpdate(id, { committee: "HR-" + committee, role: 3 });
+        await member.findByIdAndUpdate(id, { role: "HR " + committee});
         res.status(200).json({
             status: httpStatusText.SUCCESS,
             data: null,
