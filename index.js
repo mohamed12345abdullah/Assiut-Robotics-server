@@ -7,6 +7,7 @@ const memberRouter = require('./routers/member.router')
 const blogRouter = require('./routers/blog.router')
 const componentRouter = require('./routers/component.router')
 const TrackRouter=require('./routers/Tracks.router')
+const lapDateRouter=require('./routers/lapDates.js')
 // status text
 const httpStatusText = require('./utils/httpStatusText');
 
@@ -33,6 +34,7 @@ app.use("/members", memberRouter);
 app.use('/blogs', blogRouter);
 app.use('/components', componentRouter);
 app.use("/Tracks/api",TrackRouter);
+app.use("/lapDates",lapDateRouter);
 // app.get("/", async
 // })
 
