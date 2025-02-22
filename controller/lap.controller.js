@@ -18,24 +18,33 @@ const createLapDate = asyncWrapper(async (req, res) => {
 })
 
 const getLapDate = asyncWrapper(async (req, res) => {   
-    // حساب بداية ونهاية الأسبوع الحالي
     const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - 3); // يرجع لبداية الأسبوع (الأحد)
-    startOfWeek.setHours(0, 0, 0, 0); // يضبط الوقت على بداية اليوم
+    
+    const startD = new Date(today);
+    startD.setDate(today.getDate() - 1);
+    startD.setHours(0, 0, 0, 0);
+    
+    const endD = new Date(today);
+    endD.setDate(today.getDate() + 6);
+    endD.setHours(23, 59, 59, 999);
 
-    const endOfWeek = new Date(today);
-    endOfWeek.setDate(today.getDate() + 3); // يذهب لنهاية الأسبوع (السبت)
-    endOfWeek.setHours(23, 59, 59, 999); // يضبط الوقت على نهاية اليوم
+    // أولاً، دعنا نجلب كل المواعيد للتحقق
 
-    const lapDate = await LapDate.find({
-        startDate: { $gte: startOfWeek, $lte: endOfWeek }
+
+    // ثم نجرب البحث بتاريخ البداية فقط
+    const lapDates= await LapDate.find({
+        startDate: { $gte: startD, $lte: endD }
     }).populate({
         path: 'member',
         select: 'name email phoneNumber avatar committee -_id'
     });
     
-    res.status(200).json({message:httpStatusText.SUCCESS,lapDate});
+
+
+    res.status(200).json({
+        message: httpStatusText.SUCCESS, 
+        lapDates: lapDates
+    });
 })
 
 
