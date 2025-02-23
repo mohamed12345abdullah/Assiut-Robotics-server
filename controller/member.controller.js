@@ -1031,8 +1031,6 @@ const submitMemberTask = async (req, res) => {
         res.status(500).json({ message: "Server error.", error: error.message });
     }
 };
-
-
 const updateTaskEvaluations = asyncWrapper(async (req, res) => {
     const { month, memberId, socialScore, behaviorScore, interactionScore } = req.body;
 
@@ -1085,16 +1083,42 @@ const updateTaskEvaluations = asyncWrapper(async (req, res) => {
             hrEvaluation.interactionScore = interactionScore;
         }
 
+        // Extract year and month from the input
+        const [year, monthNumber] = month.split('-').map(Number);
+
+        // Get tasks for the given month
+        const tasksForMonth = getTasksByMonth(Member, monthNumber, year);
+
+        // Update task rates based on the new HR evaluation
+        tasksForMonth.forEach(task => {
+            // Calculate task rate using the formula
+            task.rate = (
+                (socialScore / 100 * 0.1 * task.points) +
+                (behaviorScore / 100 * 0.1 * task.points) +
+                (interactionScore / 100 * 0.1 * task.points) +
+                task.headEvaluation +
+                task.deadlineEvaluation
+            );
+        });
+
         // Save the updated member
         await Member.save();
 
         res.json({ message: "تم تحديث تقييمات HR بنجاح" });
     } catch (error) {
         console.error("حدث خطأ أثناء تحديث التقييمات:", error);
-        res.status(500).json({ message: error.message});
+        res.status(500).json({ message: error.message });
     }
 });
 
+const getTasksByMonth = (member, month, year) => {
+    const startOfMonth = new Date(year, month - 1, 1); // First day of the month
+    const endOfMonth = new Date(year, month, 0, 23, 59, 59); // Last day of the month
+
+    return member.tasks.filter(
+        (task) => task.startDate >= startOfMonth && task.deadline <= endOfMonth
+    );
+};
 
 module.exports = {
     getCommittee,
