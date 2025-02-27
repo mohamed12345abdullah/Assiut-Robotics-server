@@ -42,6 +42,6 @@ app.use((error, req, res, next) => {
 
 
 
-app.listen(PORT||3000, () => {
-  console.log("server is run and listen to port : ", `http://localhost:${PORT}/`);
+app.listen(3000, () => {
+  console.log("server is run and listen to port : ", `http://localhost:${3000}/`);
 })
