@@ -1,40 +1,10 @@
-require('dotenv').config();
-const PORT = process.env.PORT;
 
-
-const express = require("express");
-const memberRouter = require('./routers/member.router')
-const blogRouter = require('./routers/blog.router')
-const componentRouter = require('./routers/component.router')
-const TrackRouter=require('./routers/Tracks.router')
-const lapDateRouter=require('./routers/lapDates.js')
-// status text
-const httpStatusText = require('./utils/httpStatusText');
 
 //cors
 
-const cors = require('cors');
-
-const app = express();
-
-
-//middlle wares
-app.use(cors());
-
-// pody barser
-const body_parser = require('body-parser');
-app.use(body_parser.json());
-app.use(body_parser.urlencoded({ extended: true }));
 
 
 
-
-app.use("/uploads", express.static(__dirname + "/uploads"))
-app.use("/members", memberRouter);
-app.use('/blogs', blogRouter);
-app.use('/components', componentRouter);
-app.use("/Tracks/api",TrackRouter);
-app.use("/lapDates",lapDateRouter);
 // app.get("/", async
 // })
 
@@ -46,10 +16,15 @@ const loggerMiddleware = require("./middleware/loggerMiddleware");
 
 app.use(loggerMiddleware);
 
+app.use("/",(req,res)=>{
+    res.status(200).json({status:200, message:"server is busy untill finish the upgrade"})
+})
 
 app.use("*", (req, res, next) => {
   res.status(404).json({ status: 404, message: "not found Api" });
 })
+
+
 
 
 
