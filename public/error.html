@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .error-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width:  400px;
+            flex-grow: 10;
+            border-left: 4px solid #dc3545;
+        }
+        .error-icon {
+            font-size: 2.5rem;
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+        .try-again {
+            background: #dc3545;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-box">
+        <div class="error-icon">!</div>
+        <h2 style="color: #2d3436; margin: 0 0 1rem 0;">Verification Error</h2>
+        <p style="color: #636e72;">"{{error_message}}"</p>
+        <a href="https://assiut-robotics-website.vercel.app/login/signup.html"> 
+            <button class="try-again" >Try Again</button>
+        </a>
+        <p style="margin-top: 1.5rem; color: #636e72;">
+            Need help? <a href="https://chat.whatsapp.com/KWHam5PV7O0LObpXAaCzHz" style="color: #dc3545;">Contact us</a>
+        </p>
+    </div>
+</body>
+</html>
