@@ -88,7 +88,7 @@ Router.route("/changeProfileImage").post(
         } catch (error) {
             res.status(500).json({ message: 'Error uploading image', error: error.message });
         }
-    }, memberController.changeProfileImage
+    },JWT.verify, memberController.changeProfileImage
 );
 
 
