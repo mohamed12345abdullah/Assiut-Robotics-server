@@ -536,7 +536,7 @@ const rate = async (req, res) => {
 
 const changeProfileImage = asyncWrapper(async (req, res) => {
 
-    const email = req.body.email;
+    const email = req.decoded.email;
     console.log(email);
 
     //  const{ID}=req.body;
