@@ -547,9 +547,15 @@ const changeProfileImage = asyncWrapper(async (req, res) => {
         throw (error)
 
     }
+console.log("imageUrl",req.imageUrl)
 
+    if (!req.imageUrl) {
+        const error = createError(404, httpStatusText.SUCCESS, "image Url not found ")
+        throw (error)
+
+    }
     oldMember.avatar = req.imageUrl;
-    oldMember.save();
+    await oldMember.save();
     res.status(200).json({
         status: httpStatusText.SUCCESS,
         data: null,
