@@ -40,28 +40,58 @@ const { uploadToCloud } = require("../utils/cloudinary");
 
 // Multer configuration
 
+const cloudinary = require('cloudinary').v2;
 
 
-const diskStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "public/"); // Save locally before uploading to Cloudinary
-    },
-    filename: (req, file, cb) => {
-        const ext = file.mimetype.split("/")[1];
-        const filename = `${file.originalname.split(".")[0]}_${Date.now()}.${ext}`;
-        req.myFileName = filename;
-        cb(null, filename);
-    },
+// Configure Cloudinary
+
+cloudinary.config({
+    cloud_name:"dlxwpay7b",
+    secure:true,
+    api_key:"957197717412299",
+    api_secret:"Pv53x9A3EkgBa3b_1H7O1Wu_sWc"
 });
 
-const fileFilter = (req, file, cb) => {
-    const imageType = file.mimetype.split("/")[1];
-    if (imageType === "jpg" || imageType === "jpeg" || imageType === "png") {
-        return cb(null, true); // Only allow JPG and PNG files
-    } else {
-        return cb(new Error("Only images (jpg, jpeg, png) are allowed!"), false);
+// Set up multer to use memory storage
+const storage = multer.memoryStorage();
+
+const upload = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        const imageType = file.mimetype.split("/")[1];
+        if (imageType === "jpg" || imageType === "jpeg" || imageType === "png") {
+            return cb(null, true); // Only allow JPG and PNG files
+        } else {
+            return cb(new Error("Only images (jpg, jpeg, png) are allowed!"), false);
+        }
     }
-};
+});
+
+Router.route("/changeProfileImage").post(
+    upload.single("image"),
+    async (req, res, next) => {
+        try {
+            if (!req.file) {
+                return res.status(400).send('No file uploaded.');
+            }
+
+            // Upload image to Cloudinary directly from memory
+            const result = await cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
+                if (error) {
+                    return res.status(500).json({ message: 'Error uploading image', error: error.message });
+                }
+                req.imageUrl = result.secure_url;
+                console.log("Uploaded to Cloudinary");
+                next();
+            }).end(req.file.buffer);
+
+        } catch (error) {
+            res.status(500).json({ message: 'Error uploading image', error: error.message });
+        }
+    }, memberController.changeProfileImage
+);
+
+
 
 // Multer middleware
 // const upload = multer({
@@ -119,35 +149,6 @@ Router.route("/changePass").post(memberController.changePass);
 
 Router.route("/rate").post(JWT.verify, memberController.rate);
 
-Router.route("/changeProfileImage").post(
-    upload.single("image"),
-    async (req, res, next) => {
-        try {
-            if (!req.file) {
-
-                return res.status(400).send('No file uploaded.');
-            } else {
-                console.log("  file is received")
-            }
-
-            // Upload image to Cloudinary using the utility function
-            const filePath = __dirname + '../public/' + req.file.path;
-            console.log(filePath);
-
-            const imageUrl = await uploadToCloud(filePath); // Passing the file path to Cloudinary
-            req.imageUrl = imageUrl;
-            console.log("uploaded to cloudinary");
-
-            next()
-            //     res.status(200).json({
-            //         message: 'Image uploaded successfully!',
-            //         url: imageUrl, // Cloudinary URL of the uploaded image
-            //     });
-        } catch (error) {
-            res.status(500).json({ message: 'Error uploading image', error: error.message });
-        }
-    }, memberController.changeProfileImage
-)
 
 
 
