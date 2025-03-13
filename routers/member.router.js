@@ -99,7 +99,7 @@ Router.route("/changeProfileImage").post(
 //     fileFilter,
 // });
 
-const upload = multer({ storage: multer.memoryStorage() });
+
 
 
 Router.route("/register").post(memberController.register);
