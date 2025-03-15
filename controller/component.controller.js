@@ -7,6 +7,7 @@ const component = require("../mongoose.models/component");
 const cloudinary=require('../utils/cloudinary');
 const { uploadToCloud } = require("../utils/cloudinary");
 const asyncWrapper = require("../middleware/asyncWrapper");
+const createError = require("../utils/createError");
 
 const addComponent = async (req, res) => {
     try {
@@ -97,17 +98,17 @@ const deleteOne = async (req, res) => {
 
 const borrowComponent= asyncWrapper(async (req, res) => {
    const {componentId, borrowerName} = req.body;
-   const updatedComponent = await component.findByIdAndUpdate(
-      componentId,
-      {
-        borrowedBy: {
-          borrowerName,
-          borrowedDate: new Date(),
-          returnDate: null
-        }
-      },
-      { new: true }
-    );
+   const updatedComponent = await component.findById(componentId)
+   if(updatedComponent.borrowedBy!=null){
+    const error=createError(400, 'Fail',"this component is already borrowed")
+    throw(error)
+   }
+   updatedComponent.borrowedBy={
+    borrowerName,
+    borrowedDate:new Date(),
+    returnDate:null
+   }
+   await updatedComponent.save();
 
     res.status(200).json({   message: "borrowed",data:updatedComponent });
   });

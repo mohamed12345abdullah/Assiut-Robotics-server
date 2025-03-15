@@ -6,6 +6,7 @@ const multer = require("multer");
 const { uploadToCloud } = require("../utils/cloudinary");
 const asyncWrapper = require("../middleware/asyncWrapper");
 const Member = require("../mongoose.models/member");
+const createError = require("../utils/createError");
 
 const OC_validate=asyncWrapper(async (req, res, next) => {
     const email=req.decoded.email;
@@ -13,7 +14,8 @@ const OC_validate=asyncWrapper(async (req, res, next) => {
     
 
     if (member.committee !== "OC" && member.role !== "leader") {
-        res.status(403).json({ message: "this aperation is only for OC" });
+        const error=createError(403, 'Fail',"this operation is only for OC")
+        throw(error);
     }
     next();
 })
