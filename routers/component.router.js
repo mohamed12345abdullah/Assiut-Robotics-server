@@ -4,6 +4,19 @@ const JWT = require("../middleware/jwt.js");
 const Router = express.Router();
 const multer = require("multer");
 const { uploadToCloud } = require("../utils/cloudinary");
+const asyncWrapper = require("../middleware/asyncWrapper");
+const Member = require("../mongoose.models/member");
+
+const OC_validate=asyncWrapper(async (req, res, next) => {
+    const email=req.decoded.email;
+    const  member= await Member.findOne({email});
+    
+
+    if (member.committee !== "OC" && member.role !== "leader") {
+        res.status(403).json({ message: "this aperation is only for OC" });
+    }
+    next();
+})
 
 // Multer configuration
 const diskStorage = multer.diskStorage({
@@ -58,13 +71,13 @@ Router.route("/add").post(
 );
 Router.route("/getComponents").get(componentController.getCombonent);
 
-Router.route("/update").post(componentController.updateComponent);
-Router.route("/deleteAll").get(componentController.deleteAll);
-Router.route("/deleteOne").post(componentController.deleteOne);
+Router.route("/update").post(JWT.verify,OC_validate,componentController.updateComponent);
+Router.route("/deleteAll").get(JWT.verify,OC_validate,componentController.deleteAll);
+Router.route("/deleteOne").post(JWT.verify,OC_validate,componentController.deleteOne);
 
 // Routes for borrowing and returning components
-Router.route("/borrow").post(componentController.borrowComponent);
-Router.route("/return").post(componentController.returnComponent);
+Router.route("/borrow").post(JWT.verify,OC_validate,componentController.borrowComponent);
+Router.route("/return").post(JWT.verify,OC_validate,componentController.returnComponent);
 
 
 
