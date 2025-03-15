@@ -62,4 +62,10 @@ Router.route("/update").post(componentController.updateComponent);
 Router.route("/deleteAll").get(componentController.deleteAll);
 Router.route("/deleteOne").post(componentController.deleteOne);
 
+// Routes for borrowing and returning components
+Router.route("/borrow").post(componentController.borrowComponent);
+Router.route("/return").post(componentController.returnComponent);
+
+
+
 module.exports = Router;

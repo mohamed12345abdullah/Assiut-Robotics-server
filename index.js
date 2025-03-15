@@ -33,6 +33,13 @@ app.use("/uploads", express.static(__dirname + "/uploads"))
 app.use("/members", memberRouter);
 app.use('/blogs', blogRouter);
 app.use('/components', componentRouter);
+
+// apis for borrow and return
+// borrow api is :  /components/borrow
+// return api is : /components/return
+
+
+
 app.use("/Tracks/api",TrackRouter);
 app.use("/lapDates",lapDateRouter);
 // app.get("/", async

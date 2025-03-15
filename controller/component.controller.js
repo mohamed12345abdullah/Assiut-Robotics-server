@@ -6,6 +6,7 @@ const component = require("../mongoose.models/component");
 
 const cloudinary=require('../utils/cloudinary');
 const { uploadToCloud } = require("../utils/cloudinary");
+const asyncWrapper = require("../middleware/asyncWrapper");
 
 const addComponent = async (req, res) => {
     try {
@@ -89,10 +90,47 @@ const deleteOne = async (req, res) => {
     }
 };
 
+
+
+
+// استعارة مكون
+
+const borrowComponent= asyncWrapper(async (req, res) => {
+   const {componentId, borrowerName} = req.body;
+   const updatedComponent = await component.findByIdAndUpdate(
+      componentId,
+      {
+        borrowedBy: {
+          borrowerName,
+          borrowedDate: new Date(),
+          returnDate: null
+        }
+      },
+      { new: true }
+    );
+
+    res.status(200).json({   message: "borrowed",data:updatedComponent });
+  });
+  
+  // إرجاع مكون
+  const returnComponent = asyncWrapper(async (req, res) => {
+    const {componentId} = req.body;
+    const updatedComponent = await component.findById(componentId)
+
+    updatedComponent.borrowedBy.returnDate = new Date();
+    updatedComponent.history.push(updatedComponent.borrowedBy);
+    updatedComponent.borrowedBy = null;
+    await updatedComponent.save();
+
+    res.status(200).json({   message: "returned",data:updatedComponent });
+  });
+
 module.exports = {
     addComponent,
     getCombonent,
     updateComponent,
     deleteAll,
     deleteOne,
+    borrowComponent,
+    returnComponent
 };
