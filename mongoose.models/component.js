@@ -9,17 +9,29 @@ const componentSchema = new mongoose.Schema({
   discount: { type: Number },
   total: { type: Number },
   category: { type: String },
+
+  requestToBorrow:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Member',
+    default: null
+  } ,
   // إضافة حقول الاستعارة
   borrowedBy: { 
     type: {
-      borrowerName: { type: String, required: true }, // اسم المستعير
-      borrowedDate: { type: Date, default: Date.now }, // تاريخ الاستعارة
-      returnDate: { type: Date }, // تاريخ الإرجاع
+      member: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' },
+      borrowDate: { type: Date, default: null },
+      returnDate: { type: Date, default: null },
     },
-    default: null // القيمة الافتراضية null تعني أن المكون غير معار
-  }
-  ,history:{
-    type: Array,
+    default: null
+  },
+  history: {
+    type: [
+      {
+        member: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' },
+        borrowDate: { type: Date, default: null },
+        returnDate: { type: Date, default: null },
+      }
+    ],
     default: []
   }
 });

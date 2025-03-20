@@ -8,6 +8,7 @@ const cloudinary=require('../utils/cloudinary');
 const { uploadToCloud } = require("../utils/cloudinary");
 const asyncWrapper = require("../middleware/asyncWrapper");
 const createError = require("../utils/createError");
+const Member = require("../mongoose.models/member");
 
 const addComponent = async (req, res) => {
     try {
@@ -49,15 +50,21 @@ const addComponent = async (req, res) => {
     }
 }; 
 
-const getCombonent = async (req, res) => {
-    try {
-        const components = await component.find({});
+const getCombonent =asyncWrapper( async (req, res) => {
 
+        const components = await component.find({})
+        .populate('requestToBorrow', 'name email committee  phoneNumber avatar')
+        .populate('borrowedBy.member', 'name email committee  phoneNumber avatar')
+        .populate('history.member', 'name email committee phoneNumber avatar') 
+
+        if(!components){
+            const error=createError(400, 'Fail',"components not found");
+            throw(error);
+        }
         res.status(200).send({ message: "get daa sucessfully", data: components });
-    } catch (error) {
-        res.status(404).send({ message: "not found" });
-    }
-};
+
+});
+
 
 const updateComponent = async (req, res) => {
     try {
@@ -96,22 +103,66 @@ const deleteOne = async (req, res) => {
 
 // استعارة مكون
 
-const borrowComponent= asyncWrapper(async (req, res) => {
-   const {componentId, borrowerName} = req.body;
-   const updatedComponent = await component.findById(componentId)
-   if(updatedComponent.borrowedBy!=null){
-    const error=createError(400, 'Fail',"this component is already borrowed")
-    throw(error)
-   }
-   updatedComponent.borrowedBy={
-    borrowerName,
-    borrowedDate:new Date(),
-    returnDate:null
-   }
-   await updatedComponent.save();
 
-    res.status(200).json({   message: "borrowed",data:updatedComponent });
-  });
+// request to borrow 
+
+const requestToBorrow= asyncWrapper(async (req, res) => {
+    const email=req.decoded.email;
+    console.log(email);
+    const memberId=await Member.findOne({email});
+
+    console.log(memberId);
+    
+    if(!memberId){
+        const error=createError(400, 'Fail',"member not found");
+        throw(error);
+    }
+    const {componentId} = req.body;
+    const updatedComponent = await component.findById(componentId)
+    if(!updatedComponent){
+        const error=createError(400, 'Fail',"component not found");
+        throw(error);
+    }
+    if(updatedComponent.borrowedBy){
+        const error=createError(400, 'Fail',"component already borrowed");
+        throw(error);
+    }
+    if(updatedComponent.requestToBorrow){
+        const error=createError(400, 'Fail',"component already requested ");
+        throw(error);
+    }
+    updatedComponent.requestToBorrow = memberId;
+    await updatedComponent.save();
+    res.status(200).json({   message: "requested",data:updatedComponent });
+})
+
+const acceptRequestToBorrow= asyncWrapper(async (req, res) => {
+
+    const {componentId,borrowDate,returnDate} = req.body;
+    const updatedComponent = await component.findById(componentId)
+    if(!updatedComponent){
+        const error=createError(400, 'Fail',"component not found");
+        throw(error);
+    }
+    if(updatedComponent.borrowedBy){
+        const error=createError(400, 'Fail',"component already borrowed");
+        throw(error);
+    }
+    if(!updatedComponent.requestToBorrow){
+        const error=createError(400, 'Fail',"component not requested");
+        throw(error);
+    }
+    updatedComponent.borrowedBy = {
+        member: updatedComponent.requestToBorrow,
+        borrowDate: borrowDate,
+        returnDate: returnDate
+    };
+    updatedComponent.requestToBorrow = null;
+    await updatedComponent.save();
+    res.status(200).json({   message: "accepted",data:updatedComponent });
+})
+    
+
   
   // إرجاع مكون
   const returnComponent = asyncWrapper(async (req, res) => {
@@ -126,12 +177,49 @@ const borrowComponent= asyncWrapper(async (req, res) => {
     res.status(200).json({   message: "returned",data:updatedComponent });
   });
 
+
+
+  // component requested
+
+  const getRequestedComponent = asyncWrapper(async (req, res) => {
+    const components = await component.find({ requestToBorrow: { $ne: null } })
+    .populate('requestToBorrow', 'name email committee  phoneNumber avatar')
+    .populate('borrowedBy.member', 'name email committee  phoneNumber avatar')
+    .populate('history.member', 'name email committee phoneNumber avatar') 
+    res.status(200).json({ message: "get requested components successfully", data: components });
+  });
+
+  const getBorrowedComponent = asyncWrapper(async (req, res) => {
+    const components = await component.find({ borrowedBy: { $ne: null } })
+    .populate('borrowedBy.member', 'name email committee  phoneNumber avatar')
+    .populate('history.member', 'name email committee phoneNumber avatar') 
+    if(!components){
+        const error=createError(400, 'Fail',"components not found");
+        throw(error);
+    }
+    res.status(200).json({ message: "get borrowed components successfully", data: components });
+  });
+
+  const getHistoryComponent = asyncWrapper(async (req, res) => {
+    const components = await component.find({ history: { $ne: [] } })
+    .populate('history.member', 'name email committee phoneNumber avatar') 
+    if(!components){
+        const error=createError(400, 'Fail',"components not found");
+        throw(error);
+    }
+    res.status(200).json({ message: "get history components successfully", data: components });
+  });
+
 module.exports = {
     addComponent,
     getCombonent,
     updateComponent,
     deleteAll,
     deleteOne,
-    borrowComponent,
-    returnComponent
+    returnComponent,
+    requestToBorrow,
+    acceptRequestToBorrow,
+    getRequestedComponent,
+    getBorrowedComponent,
+    getHistoryComponent 
 };

@@ -78,8 +78,15 @@ Router.route("/deleteAll").get(JWT.verify,OC_validate,componentController.delete
 Router.route("/deleteOne").post(JWT.verify,OC_validate,componentController.deleteOne);
 
 // Routes for borrowing and returning components
-Router.route("/borrow").post(JWT.verify,OC_validate,componentController.borrowComponent);
+// Router.route("/borrow").post(JWT.verify,OC_validate,componentController.borrowComponent);
 Router.route("/return").post(JWT.verify,OC_validate,componentController.returnComponent);
+
+// Routes for requested and borrowed components
+Router.route("/requestToBorrow").post(JWT.verify,componentController.requestToBorrow);
+Router.route("/acceptRequestToBorrow").post(JWT.verify,OC_validate,componentController.acceptRequestToBorrow);
+Router.route("/getRequestedComponent").get(JWT.verify,OC_validate,componentController.getRequestedComponent);
+Router.route("/getBorrowedComponent").get(JWT.verify,OC_validate,componentController.getBorrowedComponent);
+Router.route("/getHistoryComponent").get(JWT.verify,OC_validate,componentController.getHistoryComponent);
 
 
 
