@@ -20,6 +20,7 @@ const componentSchema = new mongoose.Schema({
     type: {
       member: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' },
       borrowDate: { type: Date, default: null },
+      deadlineDate: { type: Date, default: null },
       returnDate: { type: Date, default: null },
     },
     default: null
@@ -29,6 +30,7 @@ const componentSchema = new mongoose.Schema({
       {
         member: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' },
         borrowDate: { type: Date, default: null },
+        deadlineDate: { type: Date, default: null },
         returnDate: { type: Date, default: null },
       }
     ],

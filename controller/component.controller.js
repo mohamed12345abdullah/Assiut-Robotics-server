@@ -163,6 +163,21 @@ const acceptRequestToBorrow= asyncWrapper(async (req, res) => {
 })
     
 
+const rejectRequestToBorrow= asyncWrapper(async (req, res) => {
+    const {componentId} = req.body;
+    const updatedComponent = await component.findById(componentId)
+    if(!updatedComponent){
+        const error=createError(400, 'Fail',"component not found");
+        throw(error);
+    }
+    if(!updatedComponent.requestToBorrow){
+        const error=createError(400, 'Fail',"component not requested");
+        throw(error);
+    }
+    updatedComponent.requestToBorrow = null;
+    await updatedComponent.save();
+    res.status(200).json({   message: "rejected",data:updatedComponent });
+})
   
   // إرجاع مكون
   const returnComponent = asyncWrapper(async (req, res) => {
@@ -219,6 +234,7 @@ module.exports = {
     returnComponent,
     requestToBorrow,
     acceptRequestToBorrow,
+    rejectRequestToBorrow,
     getRequestedComponent,
     getBorrowedComponent,
     getHistoryComponent 

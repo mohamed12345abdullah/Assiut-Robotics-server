@@ -84,6 +84,7 @@ Router.route("/return").post(JWT.verify,OC_validate,componentController.returnCo
 // Routes for requested and borrowed components
 Router.route("/requestToBorrow").post(JWT.verify,componentController.requestToBorrow);
 Router.route("/acceptRequestToBorrow").post(JWT.verify,OC_validate,componentController.acceptRequestToBorrow);
+Router.route("/rejectRequestToBorrow").post(JWT.verify,OC_validate,componentController.rejectRequestToBorrow);
 Router.route("/getRequestedComponent").get(JWT.verify,OC_validate,componentController.getRequestedComponent);
 Router.route("/getBorrowedComponent").get(JWT.verify,OC_validate,componentController.getBorrowedComponent);
 Router.route("/getHistoryComponent").get(JWT.verify,OC_validate,componentController.getHistoryComponent);
