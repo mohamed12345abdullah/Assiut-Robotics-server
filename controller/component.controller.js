@@ -109,11 +109,12 @@ const deleteOne = async (req, res) => {
 // request to borrow 
 
 const sendNotification =       async (memberEmail, componentId) => {
-    const member = await Member.findOne({email:memberEmail});
-    const updateComponent = await component.findById(componentId);
-    let sendTo=[];
-    const leader=await Member.find({role:'leader'},{email:1});
-    leader.forEach(item => sendTo.push(item.email));
+    try {
+        const member = await Member.findOne({email:memberEmail});
+        const updateComponent = await component.findById(componentId);
+        let sendTo=[];
+        const leader=await Member.find({role:'leader'},{email:1});
+        leader.forEach(item => sendTo.push(item.email));
     const OC=await Member.find({committee:'OC'},{email:1});
     OC.forEach(item => sendTo.push(item.email));
     console.log(sendTo);
@@ -140,13 +141,17 @@ const sendNotification =       async (memberEmail, componentId) => {
     })
 
     return;
+    } catch (error) {
+       return error;
+        
+    }
     // Send notification to member
     
 }
     
  
 
-sendNotification('mohamed12345abdullah@gmail.com','67ad1ede84cf1154ac370b2b')
+// sendNotification('mohamed12345abdullah@gmail.com','67ad1ede84cf1154ac370b2b')
 
 
 
