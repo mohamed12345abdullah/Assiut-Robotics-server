@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Email Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+        }
+        .email-container {
+            max-width: 500px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+        }
+        .component-img, .member-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 15px auto;
+            display: block;
+        }
+        .info {
+            font-size: 16px;
+            color: #333;
+            margin: 8px 0;
+            font-weight: bold;
+        }
+        .divider {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+        .action-buttons {
+            margin-top: 20px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #6ac4ff;
+            border-radius: 5px;
+            padding: 12px 25px;
+            width: 80%;
+            height: 30px;
+            margin: auto;
+        }
+        .action-buttons:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .action-buttons a {
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            display: inline-block;
+            margin: 8px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <img src="{{componentImage}}" alt="Component" class="component-img">
+        
+        <p class="info"><strong>Component Name:</strong> {{componentName}}</p>
+        <p class="info"><strong>Category:</strong> {{category}}</p>
+        
+        <hr class="divider">
+        
+        <img src="{{avatar}}" alt="Member" class="member-avatar">
+        
+        <p class="info"><strong>Name:</strong> {{name}}</p>
+        <p class="info"><strong>Email:</strong> {{email}}</p>
+        <p class="info"><strong>Committee:</strong> {{committee}}</p>
+        <p class="info"><strong>Phone Number:</strong> {{phoneNumber}}</p>
+        
+        <div class="action-buttons">
+           
+            <a href="https://assiut-robotics-website.vercel.app/profile-page/index.html" class="btn btn-accept">Go to Dashboard</a>
+        </div>
+    </div>
+
+
+</body>
+</html>

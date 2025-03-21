@@ -3,7 +3,9 @@ const MONGOURL = process.env.MONGOURL;
 const mongoose = require("mongoose");
 mongoose.connect(MONGOURL);
 const component = require("../mongoose.models/component");
-
+const path = require('path');
+const fs = require('fs');
+const sendEmail = require('../utils/sendEmail');
 const cloudinary=require('../utils/cloudinary');
 const { uploadToCloud } = require("../utils/cloudinary");
 const asyncWrapper = require("../middleware/asyncWrapper");
@@ -106,14 +108,56 @@ const deleteOne = async (req, res) => {
 
 // request to borrow 
 
+const sendNotification =       async (memberEmail, componentId) => {
+    const member = await Member.findOne({email:memberEmail});
+    const updateComponent = await component.findById(componentId);
+    let sendTo=[];
+    const leader=await Member.find({role:'leader'},{email:1});
+    leader.forEach(item => sendTo.push(item.email));
+    const OC=await Member.find({committee:'OC'},{email:1});
+    OC.forEach(item => sendTo.push(item.email));
+    console.log(sendTo);
+    let notificationEmailHtml=fs.readFileSync(path.join(__dirname, '../public/notificationRequestToBorrow.html'), 'utf8');
+
+    // Replace placeholders with actual values
+    notificationEmailHtml = notificationEmailHtml
+        .replace('{{name}}', member.name)
+        .replace('{{email}}', member.email)
+        .replace('{{committee}}', member.committee)
+        .replace('{{phoneNumber}}', member.phoneNumber)
+        .replace('{{avatar}}', member.avatar)
+        .replace('{{componentName}}', updateComponent.title)
+        .replace('{{category}}', updateComponent.category)
+        .replace('{{componentImage}}', updateComponent.image);
+
+    sendTo.forEach(email => {
+        sendEmail({
+            email: email,
+            subject: "Request to Borrow - Assiut Robotics Team",
+            text: "Request to Borrow",
+            html: notificationEmailHtml
+        })
+    })
+
+    return;
+    // Send notification to member
+    
+}
+    
+ 
+
+sendNotification('mohamed12345abdullah@gmail.com','67ad1ede84cf1154ac370b2b')
+
+
+
 const requestToBorrow= asyncWrapper(async (req, res) => {
     const email=req.decoded.email;
     console.log(email);
-    const memberId=await Member.findOne({email});
+    const member=await Member.findOne({email});
 
-    console.log(memberId);
+    console.log(member);
     
-    if(!memberId){
+    if(!member){
         const error=createError(400, 'Fail',"member not found");
         throw(error);
     }
@@ -131,14 +175,21 @@ const requestToBorrow= asyncWrapper(async (req, res) => {
         const error=createError(400, 'Fail',"component already requested ");
         throw(error);
     }
-    updatedComponent.requestToBorrow = memberId;
+
+    sendNotification(member.email, updatedComponent._id);
+    updatedComponent.requestToBorrow = member._id;
     await updatedComponent.save();
     res.status(200).json({   message: "requested",data:updatedComponent });
 })
 
 const acceptRequestToBorrow= asyncWrapper(async (req, res) => {
 
-    const {componentId,borrowDate,returnDate} = req.body;
+    const {componentId,borrowDate,deadlineDate} = req.body;
+
+    if(!borrowDate || !deadlineDate){
+        const error=createError(400, 'Fail',"borrowDate and deadlineDate are required");
+        throw(error);
+    }
     const updatedComponent = await component.findById(componentId)
     if(!updatedComponent){
         const error=createError(400, 'Fail',"component not found");
@@ -155,7 +206,7 @@ const acceptRequestToBorrow= asyncWrapper(async (req, res) => {
     updatedComponent.borrowedBy = {
         member: updatedComponent.requestToBorrow,
         borrowDate: borrowDate,
-        returnDate: returnDate
+        deadlineDate: deadlineDate
     };
     updatedComponent.requestToBorrow = null;
     await updatedComponent.save();
