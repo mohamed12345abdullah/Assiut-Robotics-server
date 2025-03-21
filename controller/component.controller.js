@@ -132,7 +132,7 @@ const sendNotification =       async (memberEmail, componentId) => {
         .replace('{{componentImage}}', updateComponent.image);
 
     sendTo.forEach(email => {
-        sendEmail({
+        await sendEmail({
             email: email,
             subject: "Request to Borrow - Assiut Robotics Team",
             text: "Request to Borrow",
