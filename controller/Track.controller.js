@@ -22,15 +22,15 @@ const addTrack = asyncWrapper(
 
 const getAllTracks = asyncWrapper(
     async (req, res) => {
-        const AllTracks = await Track.find({})
-            .populate({
-                path: 'courses',
-                populate: [
-                    { path: 'tasks' },
-                    { path: 'members' }
-                ]
+        const AllTracks = await Track.find({},{name:1,description:1,committee:1,_id:1})
+            // .populate({
+            //     path: 'courses',
+            //     populate: [
+            //         { path: 'tasks' },
+            //         { path: 'members' }
+            //     ]
 
-            });
+            // });
 
 
 
@@ -90,14 +90,14 @@ const getCoursesOfTrack = asyncWrapper(
 
         const id = req.params.id;
         const track = await Track.findById(id)
-            .populate({
-                path: 'courses',
-                populate: [
-                    { path: 'tasks' },
-                    { path: 'members' }
-                ]
+            // .populate({
+            //     path: 'courses',
+            //     populate: [
+            //         { path: 'tasks' },
+            //         { path: 'members' }
+            //     ]
 
-            });
+            // });
         if (!track) {
             const error = createError(404, httpStatusText.FAIL, "Track not found");
             throw error
