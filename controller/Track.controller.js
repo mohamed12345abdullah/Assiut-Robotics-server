@@ -94,7 +94,7 @@ const getCoursesOfTrack = asyncWrapper(
                 path: 'courses',
                 populate: [
                     // { path: 'tasks' },
-                    { path: 'members' }
+                    { path: 'members',select:'name email _id startedTracks' }
                 ]
 
             });
