@@ -90,14 +90,14 @@ const getCoursesOfTrack = asyncWrapper(
 
         const id = req.params.id;
         const track = await Track.findById(id)
-            // .populate({
-            //     path: 'courses',
-            //     populate: [
-            //         { path: 'tasks' },
-            //         { path: 'members' }
-            //     ]
+            .populate({
+                path: 'courses',
+                populate: [
+                    // { path: 'tasks' },
+                    { path: 'members' }
+                ]
 
-            // });
+            });
         if (!track) {
             const error = createError(404, httpStatusText.FAIL, "Track not found");
             throw error
