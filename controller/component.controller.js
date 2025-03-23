@@ -272,13 +272,12 @@ const rejectRequestToBorrow= asyncWrapper(async (req, res) => {
         throw(error);
     }
     res.status(200).json({ message: "get history components successfully", data: components });
-  });
+  }); 
 
 module.exports = {
     addComponent,
     getCombonent,
     updateComponent,
-    deleteAll,
     deleteOne,
     returnComponent,
     requestToBorrow,
