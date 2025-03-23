@@ -74,7 +74,7 @@ Router.route("/add").post(
 Router.route("/getComponents").get(componentController.getCombonent);
 
 Router.route("/update").post(JWT.verify,OC_validate,componentController.updateComponent);
-Router.route("/deleteAll").get(JWT.verify,OC_validate,componentController.deleteAll);
+
 Router.route("/deleteOne").post(JWT.verify,OC_validate,componentController.deleteOne);
 
 // Routes for borrowing and returning components

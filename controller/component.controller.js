@@ -80,14 +80,7 @@ const updateComponent = async (req, res) => {
     }
 };
 
-const deleteAll = async (req, res) => {
-    try {
-        await component.deleteMany({});
-        res.status(200).send({ message: "deleted" });
-    } catch (error) {
-        res.status(500).send({ message: error.message });
-    }
-};
+
 
 const deleteOne = async (req, res) => {
     try {
