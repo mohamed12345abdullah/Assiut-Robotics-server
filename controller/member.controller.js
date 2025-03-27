@@ -55,7 +55,7 @@ const filePath = path.join(__dirname, '../public/verifyEmail.html');
 const htmlContent_ofVrify = fs.readFileSync(filePath, "utf-8");
 const register = asyncWrapper(async (req, res, next) => {
 
-    if(Date.now() > new Date("2025-03-27T11:59:59.999Z").getTime()){
+    if(Date.now() > new Date("2025-03-27T23:59:59.999Z").getTime()){
         const error = createError(400, httpStatusText.FAIL, "Registration is closed")
         throw (error);
     }
