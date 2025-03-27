@@ -3,6 +3,7 @@ const MONGOURL = process.env.MONGOURL;
 const mongoose = require("mongoose");
 mongoose.connect(MONGOURL);
 const member = require("../mongoose.models/member");
+const Visits = require("../mongoose.models/visits");
 const { Track, Course, Task } = require('../mongoose.models/Track')
 
 // jwt
@@ -155,7 +156,7 @@ const login = asyncWrapper(async (req, res) => {
 
 
     console.log("body", req.body);
-    const { email, password, remember } = req.body;
+    const { email, password, remember,ip } = req.body;
     const oldMember = await member.findOne({ email })
         .populate({
             path: "startedTracks.track",
@@ -173,7 +174,7 @@ const login = asyncWrapper(async (req, res) => {
             }
         })
         .populate("startedTracks.courses.submittedTasks.task");
-    console.log(oldMember);
+    // console.log(oldMember);
 
     if (!oldMember) {
         const error = createError(404, httpStatusText.FAIL, "User not Found")
@@ -203,6 +204,19 @@ const login = asyncWrapper(async (req, res) => {
 
     const token = await generateToken({ email }, remember);
 
+    // check if the ip is already in the visits array
+    let visitId = await Visits.findOne({ ip }, { _id: 1 })._id;
+    if (!visitId) {
+        const newVisit = new Visits({ ip });
+        await newVisit.save();
+        visitId = newVisit._id;
+    }
+    const existIp = oldMember.visits.find((ele) => ele === visitId);
+    if (!existIp) {
+        oldMember.visits.push(visitId);
+    }
+    console.log(oldMember.visits);
+    await oldMember.save();
     res.status(200).json({
         status: httpStatusText.SUCCESS,
         data: { token: token, memberData: oldMember },

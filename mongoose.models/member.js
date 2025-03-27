@@ -170,6 +170,10 @@ const memberSchema = new mongoose.Schema({
 
   tasks: [memberTaskSchema],
   hr_rate: [hrRateSchema],
+
+
+
+  visits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Visits' }],
 })
 
 const member = mongoose.model('Member', memberSchema);

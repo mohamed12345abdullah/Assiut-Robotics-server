@@ -8,6 +8,7 @@ const blogRouter = require('./routers/blog.router')
 const componentRouter = require('./routers/component.router')
 const TrackRouter=require('./routers/Tracks.router')
 const lapDateRouter=require('./routers/lapDates.js')
+const visitRouter=require('./routers/visit.js')
 // status text
 const httpStatusText = require('./utils/httpStatusText');
 
@@ -42,6 +43,9 @@ app.use('/components', componentRouter);
 
 app.use("/Tracks/api",TrackRouter);
 app.use("/lapDates",lapDateRouter);
+
+
+app.use("/visitor",visitRouter);
 // app.get("/", async
 // })
 
