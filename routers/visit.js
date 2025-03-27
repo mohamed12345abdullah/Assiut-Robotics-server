@@ -30,6 +30,10 @@ router.route("/")
             });
         }
         const newVisit = new Visits({ ip });
+        newVisit.history.push({
+            visitStart: new Date(),
+            visitEnd: null,
+        });
         await newVisit.save();
         res.status(200).json({
             status: httpStatusText.SUCCESS,

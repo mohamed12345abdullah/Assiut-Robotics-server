@@ -205,17 +205,18 @@ const login = asyncWrapper(async (req, res) => {
     const token = await generateToken({ email }, remember);
 
     // check if the ip is already in the visits array
-    let visitId = await Visits.findOne({ ip }, { _id: 1 })._id;
-    if (!visitId) {
+    const visit = await Visits.findOne({ ip }, { _id: 1 });
+    if(!visit){
         const newVisit = new Visits({ ip });
         await newVisit.save();
-        visitId = newVisit._id;
+        oldMember.visits.push(newVisit._id);
+    }else{
+        if(!oldMember.visits.includes(visit._id)){
+            oldMember.visits.push(visit._id);
+        }
     }
-    const existIp = oldMember.visits.find((ele) => ele === visitId);
-    if (!existIp) {
-        oldMember.visits.push(visitId);
-    }
-    console.log(oldMember.visits);
+
+
     await oldMember.save();
     res.status(200).json({
         status: httpStatusText.SUCCESS,

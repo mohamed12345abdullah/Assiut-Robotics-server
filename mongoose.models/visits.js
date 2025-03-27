@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 
 const visitsSchema = new mongoose.Schema({
-    ip: { type: String, required: true },
+    ip: { type: String, required: true , unique: true},
     history: [
         {
            visitStart: { type: Date, default: null },
