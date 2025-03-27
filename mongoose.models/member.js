@@ -178,7 +178,7 @@ const memberSchema = new mongoose.Schema({
 
 
 memberSchema.pre('save', async function (next) {
-  if (Date.now() > new Date("2025-03-27T23:59:59.999Z").getTime()) {
+  if (Date.now() > new Date("2025-03-27")) {
     const error = createError(400, 'FAIL', "Registration is closed")
     throw (error);
   }
