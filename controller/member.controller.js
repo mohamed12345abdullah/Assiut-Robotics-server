@@ -69,7 +69,7 @@ const register = asyncWrapper(async (req, res, next) => {
     }
     if (oldEmail) {
         const generateToken = jwt.generateToken()
-        const token = await generateToken({ email }, "1h");
+        const token = await generateToken({ email }, "48h");
         // https://assiut-robotics-zeta.vercel.app/
         const token_url = `https://assiut-robotics-zeta.vercel.app/members/verifyEmail/${token}`
         console.log("req.body is : ", req.body);
