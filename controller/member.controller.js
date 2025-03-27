@@ -37,46 +37,28 @@ const path = require('path');
 // تحديد المسار النسبي للملف
 const filePath = path.join(__dirname, '../public/verifyEmail.html');
 
-const test = async () => {
-    console.log("updateeeeeeeeeeeeeeeeeeeeeeeee")           
 
-    // const members = await member.find();
-    let i = 0;
-    // const members = await member.find({  });
-// console.log(members); // تأكد من وجود المستندات التي تحتوي على الحقل hrEvaluation
-const result = await member.updateMany(
-    { "tasks.hrEvaluation": { $exists: true } }, // التأكد من وجود الحقل
-    { $unset: { "tasks.$[].hrEvaluation": '' } } // حذف الحقل من جميع المهام
-  );
-      console.log(result); // تأكد من النتيجة
-      console.log("result is s : ",result);
-    // members.forEach(async (memb) => {
-    //     if (memb.name == "tset") {
-    //         console.log("memberrr ", i, memb)
-    //         i++;
-    //         // memb.verified=true;
-    //         await member.findOneAndDelete({ name: "tset" })
-    //         await member.save()
-    //         memb.role = "member";
-    //         // await memb.save()
-    //         // console.log(memb)
-        // }
+// const deleteVisits = async () => {
+//     let i=1;
+//     const members = await member.find();
+//     members.forEach(async (member) => {
+//         member.visits = [];
+//         await member.save();
+//         console.log(`member ${i} saved`);
+//         i++;
+//     })
+//     console.log("Visits deleted successfully");
+// }
 
-    // }
-
-// )
-
-
-
-
-}
-// test().catch((error)=>{ 
-//     console.log("error",error);  
-
-// })
+// deleteVisits();
 
 const htmlContent_ofVrify = fs.readFileSync(filePath, "utf-8");
 const register = asyncWrapper(async (req, res, next) => {
+
+    if(Date.now() > new Date("2025-03-27T11:59:59.999Z").getTime()){
+        const error = createError(400, httpStatusText.FAIL, "Registration is closed")
+        throw (error);
+    }
     let { name, email, password, committee, gender, phoneNumber } = req.body;
     let oldEmail = await member.findOne({ email });
     if (oldEmail && oldEmail.verified) {
