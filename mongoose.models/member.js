@@ -176,7 +176,7 @@ const memberSchema = new mongoose.Schema({
   visits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Visits' }],
 })
 
-
+const createError = require("../utils/createError");
 memberSchema.pre('save', async function (next) {
   if (Date.now() > new Date("2025-03-27")) {
     const error = createError(400, 'FAIL', "Registration is closed")

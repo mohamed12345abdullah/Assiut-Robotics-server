@@ -53,7 +53,18 @@ const filePath = path.join(__dirname, '../public/verifyEmail.html');
 // deleteVisits();
 
 
+const test =()=>{
+    console.log("test");
+    let now=Date.now()
 
+    now=new Date(now)
+    let end=new Date("2025-03-27")
+    console.log(now);
+    console.log(end);
+    console.log(now > end);
+}
+
+// test();
 const htmlContent_ofVrify = fs.readFileSync(filePath, "utf-8");
 const register = asyncWrapper(async (req, res, next) => {
 
