@@ -47,8 +47,8 @@ app.use("/visitor",visitRouter);
 // app.get("/", async
 // })
 
-
-// app.use("/electric", )
+const electricRouter = require('./routers/electric');
+app.use("/electric", electricRouter);
 
 // const committeeRouter = require('./routers/committee.router');
 // app.use('/api/committees', committeeRouter);
