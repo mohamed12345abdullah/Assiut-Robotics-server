@@ -48,6 +48,8 @@ app.use("/visitor",visitRouter);
 // })
 
 
+// app.use("/electric", )
+
 // const committeeRouter = require('./routers/committee.router');
 // app.use('/api/committees', committeeRouter);
 
