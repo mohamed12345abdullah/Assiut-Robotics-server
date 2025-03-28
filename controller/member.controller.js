@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 mongoose.connect(MONGOURL);
 const member = require("../mongoose.models/member");
 const Visits = require("../mongoose.models/visits");
-const { Track, Course, Task } = require('../mongoose.models/Track')
 
 // jwt
 const jwt = require("../middleware/jwt");
@@ -154,22 +153,8 @@ const login = asyncWrapper(async (req, res) => {
     console.log("body", req.body);
     const { email, password, remember,ip } = req.body;
     const oldMember = await member.findOne({ email })
-        .populate({
-            path: "startedTracks.track",
-            populate: {
-                path: "courses", // يملأ الكورسات داخل التراك
-                populate: {
-                    path: "tasks", // يملأ التاسكات داخل الكورسات
-                }
-            }
-        })
-        .populate({
-            path: "startedTracks.courses.course",
-            populate: {
-                path: "tasks", // يملأ التاسكات داخل الكورس
-            }
-        })
-        .populate("startedTracks.courses.submittedTasks.task");
+ 
+   
     // console.log(oldMember);
 
     if (!oldMember) {
@@ -226,22 +211,6 @@ const login = asyncWrapper(async (req, res) => {
 const getAllMembers = asyncWrapper(async (req, res) => {
 
     let members = await member.find({}, { password: false })
-    .populate({
-        path: "startedTracks.track",
-        populate: {
-            path: "courses", // يملأ الكورسات داخل التراك
-            populate: {
-                path: "tasks", // يملأ التاسكات داخل الكورسات
-            }
-        }
-    })
-    .populate({
-        path: "startedTracks.courses.course",
-        populate: {
-            path: "tasks", // يملأ التاسكات داخل الكورس
-        }
-    })
-    .populate("startedTracks.courses.submittedTasks.task");;
 
     res.status(200).json({
         status: httpStatusText.SUCCESS,
@@ -257,22 +226,8 @@ const verify = asyncWrapper(async (req, res) => {
     try {
         if (req.decoded) {
             const oldMember = await member.findOne({ email: req.decoded.email }, { password: false })
-                .populate({
-                    path: "startedTracks.track",
-                    populate: {
-                        path: "courses", // يملأ الكورسات داخل التراك
-                        populate: {
-                            path: "tasks", // يملأ التاسكات داخل الكورسات
-                        }
-                    }
-                })
-                .populate({
-                    path: "startedTracks.courses.course",
-                    populate: {
-                        path: "tasks", // يملأ التاسكات داخل الكورس
-                    }
-                })
-                .populate("startedTracks.courses.submittedTasks.task");
+        
+             
             if (oldMember) {
                 res.status(200).send({ message: "success authorization", data: oldMember });
             } else {
@@ -578,228 +533,11 @@ console.log("imageUrl",req.imageUrl)
 
 
 
-const joinCourse = asyncWrapper(
-    async (req, res, next) => {
-        const { email } = req.decoded;
-        console.log(email);
-
-        const { trackId, courseId } = req.body;
-        console.log(trackId, courseId);
-
-        let MEMBER;
-        MEMBER = await member.findOneAndUpdate(
-            {
-                email,
-                "startedTracks.track": trackId,
-                "startedTracks.courses.course": { $ne: courseId } // يتأكد أن الكورس غير موجود
-
-
-            }, // نبحث عن التراك داخل المستخدم
-            {
-                $addToSet: { "startedTracks.$.courses": { course: courseId } } // إضافة الكورس داخل التراك المحدد
-            },
-            { new: true }
-        )
-            .populate({
-                path: "startedTracks.track",
-                populate: {
-                    path: "courses", // يملأ الكورسات داخل التراك
-                    populate: {
-                        path: "tasks", // يملأ التاسكات داخل الكورسات
-                    }
-                }
-            })
-            .populate({
-                path: "startedTracks.courses.course",
-                populate: {
-                    path: "tasks", // يملأ التاسكات داخل الكورس
-                }
-            })
-            .populate("startedTracks.courses.submittedTasks.task");
-
-        if (!MEMBER) {
-            MEMBER = await member.findOneAndUpdate(
-                {
-                    email,
-                    "startedTracks.track": { $ne: trackId },
-
-                },
-                {
-                    $push: {
-                        startedTracks: {
-                            track: trackId,
-                            courses: [{ course: courseId }]
-                        }
-                    },
-
-                },
-                { new: true }
-
-            );
-        }
-        if (!MEMBER) {
-            const error = createError(400, httpStatusText.FAIL, "you are already joind to this course")
-            throw error
-        }
-        const course = await Course.findOne({ _id: courseId })
-        course.members.push(MEMBER._id);
-        await course.save();
-        res.status(200).json({ message: "joined to course successfully", data: MEMBER });
-
-
-    }
-)
-
-const submitTask = asyncWrapper(
-    async (req, res, next) => {
-        const { email } = req.decoded;
-        console.log(email);
-        const { trackId, courseId, taskId, submissionLink, submittedAt, rate, notes } = req.body;
-        console.log(trackId, courseId, taskId);
-
-        let MEMBER;
-        MEMBER = await member.findOne({
-            email,
-            "startedTracks.courses.course": courseId,
-            "startedTracks.track": trackId,
-        })
-        if (!MEMBER) {
-            const error = createError(400, httpStatusText.FAIL, "you are not joined to this course");
-            throw error
-        }
-        MEMBER = await member.findOneAndUpdate(
-            {
-                email,
-                "startedTracks.track": trackId,  // ✅ تحويل إلى ObjectId
-                "startedTracks.courses.course": courseId,  // ✅ تحويل إلى ObjectId
-                "startedTracks.courses.submittedTasks.task": { $ne: taskId } // ✅ منع التكرار
-            },
-            {
-                $push: {
-                    "startedTracks.$[track].courses.$[course].submittedTasks": { // ✅ إضافة بيانات المهمة
-                        task: taskId, // ✅ تحويل إلى ObjectId
-                        submissionLink,
-                        rate,
-                        notes
-                    }
-                }
-            },
-            {
-                new: true,
-                arrayFilters: [
-                    { "track.track": trackId },
-                    { "course.course": courseId }
-                ]
-            }
-        )
-            .populate({
-                path: "startedTracks.track",
-                populate: {
-                    path: "courses", // يملأ الكورسات داخل التراك
-                    populate: {
-                        path: "tasks", // يملأ التاسكات داخل الكورسات
-                    }
-                }
-            })
-            .populate({
-                path: "startedTracks.courses.course",
-                populate: {
-                    path: "tasks", // يملأ التاسكات داخل الكورس
-                }
-            })
-            .populate("startedTracks.courses.submittedTasks.task");;
 
 
 
-        if (!MEMBER) {
-            const error = createError(200, httpStatusText.FAIL, "this task is already submited")
-            throw error
-        }
-        res.status(200).json({ message: "submitted successfully", data: MEMBER });
-
-    }
-)
 
 
-const getMembersJoinedCourse = asyncWrapper(
-    async (req, res, next) => {
-        const courseId = req.params.courseId;
-
-        // التحقق من أن الكورس موجود
-        const course = await Course.findById(courseId).populate({
-            path: "members",
-            populate: {
-                path: "startedTracks.track",
-                populate: {
-                    path: "courses",
-                    populate: {
-                        path: "tasks"
-                    }
-                }
-            }
-        });
-
-        if (!course) {
-            return res.status(404).json({ message: "Course not found" });
-        }
-
-        res.status(200).json({
-            message: "Data retrieved successfully",
-            members: course.members
-        });
-    }
-);
-
-const updateTaskEvaluation = async (req, res) => {
-    try {
-        const { memberId, taskId, submissionId } = req.params;
-        const { rate, notes } = req.body;
-
-        // البحث عن العضو بالتراك والكورس المحددين
-        const Member = await member.findById(memberId);
-        if (!Member) {
-            return res.status(404).json({ message: 'Member not found' });
-        }
-
-        // البحث عن التراك الذي يحتوي على الكورس المحدد
-        const track = Member.startedTracks.find(track =>
-            track.courses.some(course => course.submittedTasks.some(task => task._id.toString() === submissionId))
-        );
-
-        if (!track) {
-            return res.status(404).json({ message: 'Track not found for this member' });
-        }
-
-        // البحث عن الكورس المحدد داخل التراك
-        const course = track.courses.find(c =>
-            c.submittedTasks.some(task => task._id.toString() === submissionId)
-        );
-
-        if (!course) {
-            return res.status(404).json({ message: 'Course not found for this member' });
-        }
-
-        // البحث عن الـ Task المحدد داخل الكورس
-        const submittedTask = course.submittedTasks.find(task => task._id.toString() === submissionId);
-
-        if (!submittedTask) {
-            return res.status(404).json({ message: 'Submitted task not found' });
-        }
-
-        // تحديث التقييم والملاحظات
-        submittedTask.rate = rate;
-        submittedTask.notes = notes;
-
-        // حفظ التعديلات في قاعدة البيانات
-        await Member.save();
-
-        res.status(200).json({ message: 'Task evaluation updated successfully', submittedTask });
-
-    } catch (error) {
-        console.error('Error updating task evaluation:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-};
 
 
 
@@ -1157,12 +895,6 @@ module.exports = {
     deleteTask,
     submitMemberTask,
     rateMemberTask,
-
-    joinCourse,
-    submitTask,
-    getMembersJoinedCourse,
-    updateTaskEvaluation,
-    
     updateTaskEvaluations,
 };
 

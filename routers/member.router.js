@@ -132,15 +132,9 @@ Router.route("/changeHead").post(JWT.verify, memberController.changeHead);
 
 Router.route("/hr").post(JWT.verify, memberController.controlHR);
 
-Router.route("/joinCourse").post(JWT.verify,memberController.joinCourse)
-
-Router.route("/getMembersJoinedCourse/:courseId").get(memberController.getMembersJoinedCourse)
 
 
-Router.route("/submitTask").post(JWT.verify,memberController.submitTask)
 
-Router.route("/:memberId/tasks/:taskId/submissions/:submissionId")
-        .put(memberController.updateTaskEvaluation)
 
 Router.route("/verifyOTP").post(otp.verifyOtp);
 
