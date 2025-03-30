@@ -90,14 +90,14 @@ const deleteOne = async (req, res) => {
             const error=createError(400, 'Fail',"id is required");
             throw(error);
         }
-        const mycomponent = await component.findById(id);
+        const mycomponent = await component.findByIdAndDelete(id);
         if(!mycomponent){
             const error=createError(400, 'Fail',"component not found");
             throw(error);
         }
-        await mycomponent.remove();
-        await component.save();
-        
+        // await mycomponent.remove();
+        // await component.save();
+
         res.status(200).send({ message: "deleted" });
     } catch (error) {
         res.status(500).send({ message: error.message });

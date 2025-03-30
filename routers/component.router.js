@@ -16,6 +16,7 @@ const OC_validate=asyncWrapper(async (req, res, next) => {
     if (member.committee !== "OC" && member.role !== "leader") {
         const error=createError(403, 'Fail',"this operation is only for OC")
         throw(error);
+        return;
     }
     next();
 })
