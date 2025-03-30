@@ -58,6 +58,51 @@ const loggerMiddleware = require("./middleware/loggerMiddleware");
 app.use(loggerMiddleware);
 
 
+
+
+
+app.get('/webhook', (req, res) => {
+  // ضع هنا verify token اللي هتختاره (مثلاً: MY_VERIFY_TOKEN)
+  const VERIFY_TOKEN = "MY_VERIFY_TOKEN";
+  
+  const mode = req.query['hub.mode'];
+  const token = req.query['hub.verify_token'];
+  const challenge = req.query['hub.challenge'];
+
+  if (mode && token) {
+    if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+      console.log('WEBHOOK_VERIFIED');
+      res.status(200).send(challenge);
+    } else {
+      res.sendStatus(403);
+    }
+  }else{
+    res.status(400).json({ status: 400,data:{
+      mode,
+      token,
+      challenge
+    }, message: "Invalid parameters" });
+  }
+});
+
+// إعداد endpoint لاستقبال بيانات الـ Webhook (POST)
+app.post('/webhook', (req, res) => {
+  const body = req.body;
+  
+  // تأكد من أن الحدث من صفحة
+  if (body.object === 'page') {
+    body.entry.forEach(entry => {
+      console.log('Received webhook event:', entry);
+      // هنا تقدر تعالج وتحفظ البيانات في قاعدة البيانات
+    });
+    // الرد لفيسبوك إن الحدث استُلم
+    res.status(200).send('EVENT_RECEIVED');
+  } else {
+    res.sendStatus(404);
+  }
+});
+
+
 app.use("*", (req, res, next) => {
   res.status(404).json({ status: 404, message: "not found Api" });
 })
