@@ -229,7 +229,7 @@ Router.put("/submitMemberTask/:taskId",JWT.verify,
 
 Router.post("/update-tasks-evaluation", memberController.updateTaskEvaluations);
 
-
+Router.post("/sendFeedBack/:memberId", memberController.generateFeedBack);
 
 
 

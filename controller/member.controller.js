@@ -875,6 +875,203 @@ const getTasksByMonth = (member, month, year) => {
     );
 };
 
+
+function generateEvaluationEmail(data) {
+    // Validate and sanitize input
+    const safeData = {
+        name: escapeHtml(data.name || ''),
+        committee: escapeHtml(data.committee || ''),
+        role: escapeHtml(data.role || ''),
+        tasksDeadline: clampValue(data.tasksDeadline, 0, 100),
+        behavior: clampValue(data.behavior, 0, 100),
+        groupInteraction: clampValue(data.groupInteraction, 0, 100),
+        technicalPerformance: clampValue(data.technicalPerformance, 0, 100),
+        total: clampValue(data.total, 0, 100),
+        awards: (data.awards || []).map(escapeHtml)
+    };
+
+    // Helper functions
+    function escapeHtml(str) {
+        return String(str).replace(/[&<>'"\n]/g, tag => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;',
+            "'": '&#39;', '"': '&quot;', '\n': '<br>'
+        }[tag]));
+    }
+
+    function clampValue(value, min, max) {
+        return Math.min(max, Math.max(min, Number(value) || min));
+    }
+
+    // Generate bulletproof progress indicator
+    function createProgressIndicator(percent) {
+        return `
+        <table border="0" cellpadding="0" cellspacing="0" width="100">
+            <tr>
+                <td style="font-family:Arial,sans-serif;font-size:14px;color:#00A7E1;font-weight:bold;text-align:center;">
+                    ${percent}%
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td width="${percent}%" bgcolor="#00A7E1" style="height:10px;border-radius:5px;"></td>
+                            <td width="${100 - percent}%" bgcolor="#e6e6e6" style="height:10px;border-radius:5px;"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>`;
+    }
+
+    // Generate the email HTML
+    return `
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Evaluation Report</title>
+        <style type="text/css">
+            /* Client-specific styles */
+            body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+            table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+            img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+            
+            /* Reset styles */
+            body { margin: 0 !important; padding: 0 !important; width: 100% !important; }
+        </style>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; color: #333333;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+                <td align="center" style="padding: 20px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #dddddd;">
+                        <!-- Header -->
+                        <tr>
+                            <td style="padding: 20px; text-align: center; border-bottom: 2px solid #00A7E1;">
+                                <h1 style="margin: 0; font-size: 24px; color: #00A7E1;">Evaluation Report</h1>
+                                <h2 style="margin: 10px 0 0; font-size: 18px;">${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}</h2>
+                            </td>
+                        </tr>
+                        
+                        <!-- Member Info -->
+                        <tr>
+                            <td style="padding: 20px;">
+                                <p><strong>Name:</strong> ${safeData.name}</p>
+                                <p><strong>Committee:</strong> ${safeData.committee}</p>
+                                <p><strong>Role:</strong> ${safeData.role}</p>
+                            </td>
+                        </tr>
+                        
+                        <!-- Evaluation Objects -->
+                        <tr>
+                            <td style="padding: 20px; border-top: 1px solid #eeeeee;">
+                                <h2 style="font-size: 20px; color: #333333;">Evaluation Objects</h2>
+                                
+                                <table width="100%" border="0" cellspacing="0" cellpadding="10">
+                                    <tr>
+                                        <td width="33%" style="text-align: center;">
+                                            <h3 style="font-size: 16px;">Tasks at deadline</h3>
+                                            ${createProgressIndicator(safeData.tasksDeadline)}
+                                        </td>
+                                        <td width="33%" style="text-align: center;">
+                                            <h3 style="font-size: 16px;">Behavior</h3>
+                                            ${createProgressIndicator(safeData.behavior)}
+                                        </td>
+                                        <td width="33%" style="text-align: center;">
+                                            <h3 style="font-size: 16px;">Group interaction</h3>
+                                            ${createProgressIndicator(safeData.groupInteraction)}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        
+                        <!-- Technical Performance -->
+                        <tr>
+                            <td style="padding: 20px; border-top: 1px solid #eeeeee;">
+                                <h3 style="font-size: 18px;">Technical performance level: 
+                                    <span style="color: #00A7E1;">${safeData.technicalPerformance}%</span>
+                                </h3>
+                            </td>
+                        </tr>
+                        
+                        <!-- Total Evaluation -->
+                        <tr>
+                            <td style="padding: 20px; border-top: 1px solid #eeeeee;">
+                                <h3 style="font-size: 18px;">Total evaluation: 
+                                    <span style="color: #00A7E1; font-weight: bold;">${safeData.total}%</span>
+                                </h3>
+                            </td>
+                        </tr>
+                        
+                        <!-- Awards -->
+                        <tr>
+                            <td style="padding: 20px; border-top: 1px solid #eeeeee;">
+                                <h2 style="font-size: 20px; color: #333333;">Awards of the month</h2>
+                                <table width="100%" border="0" cellspacing="0" cellpadding="5">
+                                    ${safeData.awards.map(award => `
+                                    <tr>
+                                        <td style="padding: 5px 0;">• ${award}</td>
+                                    </tr>
+                                    `).join('')}
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>`;
+}
+
+const generateFeedBack = asyncWrapper(async (req, res) => {
+    const { memberId } = req.params;
+    const Member = await member.findById(memberId);
+
+    if (!Member) {
+        return res.status(404).json({ message: "Member not found" });
+    }
+    const data=req.body;
+    console.log("data", data);
+    if(!data){
+        return res.status(400).json({ message: "Invalid data" });
+    }
+
+    const evaluationTemplate = fs.readFileSync(path.join(__dirname, '../public/evaluation-template.html'), 'utf8');
+
+    // Function to replace template values with actual data
+    
+    // Your data object
+    const evaluationData = {
+        name: Member.name,
+        committee: data.committee,
+        role: Member.role,
+        tasksDeadline: data.tasksDeadline,
+        behavior: data.behavior,
+        groupInteraction: data.groupInteraction,
+        technicalPerformance: data.technicalPerformance,
+        total: data.total,
+        awards: data.awards
+    };
+    
+    // Generate the populated template
+    const populatedTemplate = generateEvaluationEmail(evaluationData);
+    
+    // Now you can use populatedTemplate (send it in response, save to file, etc.)
+
+    await sendEmail({
+        email: Member.email,
+        subject: 'Evaluation Report',
+        text: 'Evaluation Report',
+        html: populatedTemplate
+    });
+
+    res.status(200).json({ message: "Evaluation report sent successfully" });
+    
+})
 module.exports = {
     getCommittee,
     register,
@@ -896,6 +1093,7 @@ module.exports = {
     submitMemberTask,
     rateMemberTask,
     updateTaskEvaluations,
+    generateFeedBack
 };
 
 

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluation Report</title>
+    <style>
+        :root {
+            --primary-color: #00A7E1;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+        }
+
+        .report-container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 2px solid var(--primary-color);
+            background-color: white;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header img {
+            height: 50px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .member-info {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .photo-placeholder {
+            width: 150px;
+            height: 150px;
+            border: 2px solid var(--primary-color);
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+
+        .info {
+            font-size: 18px;
+        }
+
+        .info p {
+            margin: 5px 0;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 24px;
+        }
+
+        .metrics {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric h3 {
+            margin: 10px 0;
+            color: #333;
+        }
+
+        /* CSS-only circle progress */
+        .circle-progress {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            margin: 0 auto;
+            border-radius: 50%;
+            background: 
+                radial-gradient(closest-side, white 79%, transparent 80%),
+                conic-gradient(#00A7E1 var(--progress-percent), #e6e6e6 0);
+        }
+
+        .circle-progress::before {
+            content: attr(data-percent) "%";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .technical-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .gauge-container {
+            width: 200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .gauge {
+            width: 200px;
+            height: 100px;
+            background: linear-gradient(90deg, #ff4d4d 0%, #ffff4d 50%, #4dff4d 100%);
+            border-radius: 100px 100px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gauge-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            bottom: 0;
+            left: var(--gauge-position, 90px);
+            transform: translateX(-50%);
+        }
+
+        .total-evaluation {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            margin: 30px auto;
+            width: 200px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .total-evaluation h3 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .total-value {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .awards {
+            padding: 20px;
+            border-top: 2px solid var(--primary-color);
+        }
+
+        .awards h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .awards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .award {
+            height: 150px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .bottom-border {
+            height: 20px;
+            background-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <div class="header">
+            <img src="https://via.placeholder.com/150x50/00A7E1/FFFFFF?text=Assiut" alt="Assiut Robotics">
+            <div>
+                <h1>Evaluation Report</h1>
+                <h2>March 2025</h2> <!-- REPLACE DATE -->
+            </div>
+            <img src="https://via.placeholder.com/150x50/00A7E1/FFFFFF?text=Robotics" alt="Assiut Robotics">
+        </div>
+
+        <div class="member-info">
+            <div class="photo-placeholder">Member Photo</div>
+            <div class="info">
+                <p><strong>Name:</strong> Afnan Zakaria</p> <!-- REPLACE NAME -->
+                <p><strong>Committee:</strong> Media - design</p> <!-- REPLACE COMMITTEE -->
+                <p><strong>Role:</strong> Member</p> <!-- REPLACE ROLE -->
+            </div>
+        </div>
+
+        <h2>Evaluation Objects</h2>
+        
+        <div class="metrics">
+            <div class="metric">
+                <h3>Tasks at deadline</h3>
+                <div class="circle-progress" 
+                     style="--progress-percent: 95%"
+                     data-percent="95"></div>
+            </div>
+            <div class="metric">
+                <h3>Behavior</h3>
+                <div class="circle-progress" 
+                     style="--progress-percent: 90%"
+                     data-percent="90"></div>
+            </div>
+            <div class="metric">
+                <h3>Group interaction</h3>
+                <div class="circle-progress" 
+                     style="--progress-percent: 10%"
+                     data-percent="10"></div>
+            </div>
+        </div>
+
+        <div class="technical-section">
+            <h3>Technical performance level</h3>
+            <div class="gauge-container">
+                <div class="gauge">
+                    <div class="gauge-marker" style="--gauge-position: 90px;"></div>
+                </div>
+                <div style="margin-top: 10px; font-size: 24px; color: #00A7E1;">50%</div>
+            </div>
+        </div>
+
+        <div class="total-evaluation">
+            <h3>Total Evaluation %</h3>
+            <div class="total-value">90%</div>
+        </div>
+
+        <div class="awards">
+            <h2>Awards of the month</h2>
+            <div class="awards-grid">
+                <div class="award">Best Presentation</div>
+                <div class="award">Best Project</div>
+                <div class="award">Best Team</div>
+            </div>
+        </div>
+
+        <div class="bottom-border"></div>
+    </div>
+</body>
+</html>

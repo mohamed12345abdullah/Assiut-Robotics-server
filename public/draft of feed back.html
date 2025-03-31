@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluation Report</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+        }
+
+        .report-container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 2px solid #00A7E1;
+            background-color: white;
+        }
+
+        .header {
+            background-color: #00A7E1;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header img {
+            height: 50px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .member-info {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            border-bottom: 2px solid #00A7E1;
+        }
+
+        .photo-placeholder {
+            width: 150px;
+            height: 150px;
+            border: 2px solid #00A7E1;
+        }
+
+        .info {
+            font-size: 18px;
+        }
+
+        .info p {
+            margin: 5px 0;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 24px;
+        }
+
+        .metrics {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric h3 {
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .circle-progress {
+            width: 120px;
+            height: 120px;
+            position: relative;
+        }
+
+        .technical-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .gauge-container {
+            width: 200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .gauge {
+            width: 200px;
+            height: 100px;
+            background: linear-gradient(90deg, #ff4d4d 0%, #ffff4d 50%, #4dff4d 100%);
+            border-radius: 100px 100px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gauge::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #00A7E1;
+            border-radius: 50%;
+            bottom: 0;
+            left: var(--gauge-position);
+            transform: translateX(-50%);
+        }
+
+        .total-evaluation {
+            background-color: #00A7E1;
+            color: white;
+            padding: 20px;
+            margin: 30px auto;
+            width: 200px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .total-evaluation h3 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .total-value {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .awards {
+            padding: 20px;
+            border-top: 2px solid #00A7E1;
+        }
+
+        .awards h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .awards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .award {
+            height: 150px;
+            border: 2px solid #00A7E1;
+            border-radius: 8px;
+        }
+
+        .bottom-border {
+            height: 20px;
+            background-color: #00A7E1;
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <div class="header">
+            <img src="https://via.placeholder.com/150x50/00A7E1/FFFFFF?text=Assiut" alt="Assiut Robotics">
+            <div>
+                <h1>Evaluation Report</h1>
+                <h2>March 2025</h2>
+            </div>
+            <img src="https://via.placeholder.com/150x50/00A7E1/FFFFFF?text=Robotics" alt="Assiut Robotics">
+        </div>
+
+        <div class="member-info">
+            <div class="photo-placeholder"></div>
+            <div class="info">
+                <p><strong>Name:</strong> <span id="member-name">Afnan Zakaria</span></p>
+                <p><strong>Committee:</strong> <span id="member-committee">Media - design</span></p>
+                <p><strong>Role:</strong> <span id="member-role">Member</span></p>
+            </div>
+        </div>
+
+        <h2>Evaluation Objects</h2>
+        
+        <div class="metrics">
+            <div class="metric">
+                <h3>Tasks at deadline</h3>
+                <div class="circle-progress" id="tasks-circle"></div>
+            </div>
+            <div class="metric">
+                <h3>Behavior</h3>
+                <div class="circle-progress" id="behavior-circle"></div>
+            </div>
+            <div class="metric">
+                <h3>Group interaction</h3>
+                <div class="circle-progress" id="interaction-circle"></div>
+            </div>
+        </div>
+
+        <div class="technical-section">
+            <h3>Technical performance level</h3>
+            <div class="gauge-container">
+                <div class="gauge" id="technical-gauge"></div>
+                <div id="technical-value" style="margin-top: 10px; font-size: 24px; color: #00A7E1;">96%</div>
+            </div>
+        </div>
+
+        <div class="total-evaluation">
+            <h3>Total Evaluation %</h3>
+            <div class="total-value" id="total-value">97%</div>
+        </div>
+
+        <div class="awards">
+            <h2>Awards of the month</h2>
+            <div class="awards-grid">
+                <div class="award"></div>
+                <div class="award"></div>
+                <div class="award"></div>
+            </div>
+        </div>
+
+        <div class="bottom-border"></div>
+    </div>
+
+  <script >
+
+  // Replace placeholder values
+//   const html = document.getElementsByTagName('html')[0].innerHTML;
+//             html.replace('Afnan Zakaria', name)
+//                       .replace('Media - design', committee)
+//                       .replace('Member', role);
+            
+//             emailTemplate.contentDocument.write(html);
+//             emailTemplate.contentDocument.close();
+
+            // Update circles in the template
+            const doc = emailTemplate.contentDocument;
+            updateCircle(doc, 'tasks-circle', tasksDeadline);
+            updateCircle(doc, 'behavior-circle', behavior);
+            updateCircle(doc, 'interaction-circle', groupInteraction);
+
+            // Update technical gauge
+            const gaugeTechnical = doc.getElementById('technical-gauge');
+            const gaugeTechnicalPosition = (technicalPerformance / 100) * 180;
+            gaugeTechnical.style.setProperty('--gauge-position', `${gaugeTechnicalPosition}px`);
+            doc.getElementById('technical-value').textContent = `${technicalPerformance}%`;
+
+            // Update total value
+            doc.getElementById('total-value').textContent = `${total}%`;
+
+            // Prepare data for backend
+            const reportData = {
+                name,
+                committee,
+                role,
+                tasksDeadline,
+                behavior,
+                groupInteraction,
+                technicalPerformance,
+                total,
+                recipientEmail,
+                emailHtml: emailTemplate.contentDocument.documentElement.outerHTML
+            };
+
+            console.log('Report data to be sent:', reportData);
+       
+
+    // Update preview
+    document.getElementById('preview-name').textContent = name;
+    document.getElementById('preview-committee').textContent = committee;
+    document.getElementById('preview-role').textContent = role;
+
+    // Update preview circles
+    updateCircle(document, 'tasks-progress', tasksDeadline);
+    updateCircle(document, 'behavior-progress', behavior);
+    updateCircle(document, 'interaction-progress', groupInteraction);
+
+    // Update technical performance gauge in preview
+    const gaugePosition = (technicalPerformance / 100) * 180;
+    const gauge = document.getElementById('technical-gauge');
+    if (gauge) {
+        gauge.style.setProperty('--gauge-position', `${gaugePosition}px`);
+    }
+    document.getElementById('technical-value').textContent = `${technicalPerformance}%`;
+    document.getElementById('total-value').textContent = `${total}%`;
+
+    // Show report preview
+    document.getElementById('reportPreview').classList.remove('hidden');
+
+
+function updateCircle(doc, elementId, percentage) {
+    const circle = doc.getElementById(elementId);
+    if (!circle) return;
+
+    // Clear existing content
+    circle.innerHTML = '';
+
+    // Create SVG
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', '120');
+    svg.setAttribute('height', '120');
+    svg.setAttribute('viewBox', '0 0 120 120');
+
+    // Create background circle
+    const bgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    bgCircle.setAttribute('cx', '60');
+    bgCircle.setAttribute('cy', '60');
+    bgCircle.setAttribute('r', '54');
+    bgCircle.setAttribute('fill', 'none');
+    bgCircle.setAttribute('stroke', '#e6e6e6');
+    bgCircle.setAttribute('stroke-width', '12');
+
+    // Create progress circle
+    const progressCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    progressCircle.setAttribute('cx', '60');
+    progressCircle.setAttribute('cy', '60');
+    progressCircle.setAttribute('r', '54');
+    progressCircle.setAttribute('fill', 'none');
+    progressCircle.setAttribute('stroke', '#00A7E1');
+    progressCircle.setAttribute('stroke-width', '12');
+    progressCircle.setAttribute('stroke-linecap', 'round');
+
+    // Calculate and set the progress
+    const circumference = 2 * Math.PI * 54;
+    const offset = circumference - (percentage / 100) * circumference;
+    progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+    progressCircle.style.strokeDashoffset = offset;
+
+    // Add circles to SVG
+    svg.appendChild(bgCircle);
+    svg.appendChild(progressCircle);
+    circle.appendChild(svg);
+
+    // Add percentage text
+    const text = document.createElement('div');
+    text.className = 'percentage';
+    text.textContent = `${percentage}%`;
+    circle.appendChild(text);
+}
+    
+  </script>
+</body>
+</html>

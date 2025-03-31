@@ -16,7 +16,7 @@ const httpStatusText = require('./utils/httpStatusText');
 const cors = require('cors');
 
 const app = express();
-
+app.set('view engine', 'ejs');
 
 //middlle wares
 app.use(cors());
