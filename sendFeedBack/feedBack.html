@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluation Report</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .report-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        
+        .report-header h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .member-info {
+            margin-bottom: 30px;
+        }
+        
+        .member-info p {
+            margin: 5px 0;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            margin-top: 25px;
+        }
+        
+        .evaluation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .evaluation-table td {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .evaluation-table td:first-child {
+            font-weight: bold;
+            width: 70%;
+        }
+        
+        .total-row {
+            font-weight: bold;
+        }
+        
+        .awards-section {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <div class="report-header">
+            <h1>Evaluation Report</h1>
+            <p id="report-month">March 2025</p>
+        </div>
+        
+        <div class="member-info">
+            <p><strong>Name:</strong> <span id="member-name">Afnan Zakaria</span></p>
+            <p><strong>Committee:</strong> <span id="committee">Media - design</span></p>
+            <p><strong id="position">Member</strong></p>
+        </div>
+        
+        <div class="evaluation-section">
+            <h2 class="section-title">Evaluation Objects</h2>
+            
+            <table class="evaluation-table">
+                <tr>
+                    <td>Tasks at deadline</td>
+                    <td id="tasks-percentage">95%</td>
+                </tr>
+                <tr>
+                    <td>Behavior</td>
+                    <td id="behavior-percentage">100%</td>
+                </tr>
+                <tr>
+                    <td>Group interaction</td>
+                    <td id="group-interaction-percentage">100%</td>
+                </tr>
+                <tr class="total-row">
+                    <td>Total Evaluation %</td>
+                    <td id="total-percentage">97%</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="awards-section">
+            <h2 class="section-title">Awards of the month</h2>
+            <div id="awards-content">
+                <!-- Awards content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // This would be replaced with actual data from your Node.js backend
+        function populateReport(data) {
+            document.getElementById('report-month').textContent = data.monthYear;
+            document.getElementById('member-name').textContent = data.name;
+            document.getElementById('committee').textContent = data.committee;
+            document.getElementById('position').textContent = data.position;
+            document.getElementById('tasks-percentage').textContent = data.tasksPercentage + '%';
+            document.getElementById('behavior-percentage').textContent = data.behaviorPercentage + '%';
+            document.getElementById('group-interaction-percentage').textContent = data.groupInteractionPercentage + '%';
+            document.getElementById('total-percentage').textContent = data.totalPercentage + '%';
+            
+            if (data.awards) {
+                document.getElementById('awards-content').innerHTML = data.awards;
+            }
+        }
+
+        // Example data - in real usage, this would come from your Node.js backend
+        const reportData = {
+            name: "Afnan Zakaria",
+            committee: "Media - design",
+            position: "Member",
+            monthYear: "March 2025",
+            tasksPercentage: 95,
+            behaviorPercentage: 100,
+            groupInteractionPercentage: 100,
+            totalPercentage: 97,
+            awards: "Best Designer of the Month"
+        };
+
+        // Populate the report when the page loads
+        window.onload = function() {
+            populateReport(reportData);
+        };
+    </script>
+</body>
+</html>

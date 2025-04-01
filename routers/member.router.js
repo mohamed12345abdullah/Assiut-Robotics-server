@@ -229,7 +229,10 @@ Router.put("/submitMemberTask/:taskId",JWT.verify,
 
 Router.post("/update-tasks-evaluation", memberController.updateTaskEvaluations);
 
-Router.post("/sendFeedBack/:memberId", memberController.generateFeedBack);
+Router.get("/sendFeedBack/:memberId/:token", memberController.generateFeedBack);
+
+
+Router.post("/sendFeedBackEmail/:memberId", memberController.sendEmailFeedBack);
 
 
 
@@ -249,7 +252,7 @@ Router.post("/sendFeedBack/:memberId", memberController.generateFeedBack);
 //       if (!req.file) {
 //         return res.status(400).send('لم يتم رفع أي ملف.');
 //       }
-  
+   
 //       const fileMetadata = {
 //         name: req.file.originalname,
 //         parents: [FOLDER_ID]
