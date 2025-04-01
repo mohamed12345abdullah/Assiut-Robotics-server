@@ -89,7 +89,8 @@ app.get('/webhook', (req, res) => {
 app.post('/webhook', (req, res) => {
   try {
     const body = req.body;
-    
+    console.log('Received webhook event:', JSON.stringify(body, null, 2)); // طباعة الـ entry كاملة
+
     // تأكد من أن الحدث من صفحة
     if (body.object === 'page') {
       body.entry.forEach(entry => {
