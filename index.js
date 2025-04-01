@@ -97,6 +97,7 @@ app.post('/webhook', (req, res) => {
 
         // معالجة البيانات الخاصة بالـ feed
         if (entry.messaging) {
+          console.log('Received messaging event:', JSON.stringify(entry.messaging, null, 2));
           entry.messaging.forEach(event => {
             if (event.message && event.message.text) {
               console.log('Received message:', event.message.text);
