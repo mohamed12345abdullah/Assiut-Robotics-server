@@ -1369,8 +1369,8 @@ const notificationFeedback=async(memberId, token)=>{
                 <p>click on the link to show your feedback</p>
             </div>
 
-            <a href="http://localhost:3000/members/sendFeedBack/${memberId}/${token}">View Feedback</a>
-        </body>
+            <a href="https://assiut-robotics-zeta.vercel.app/members/sendFeedBack/${memberId}/${token}">View Feedback</a>
+        </body> 
         </html>
     `
 }
