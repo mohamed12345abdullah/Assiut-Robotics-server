@@ -875,235 +875,244 @@ const getTasksByMonth = (member, month, year) => {
         (task) => task.startDate >= startOfMonth && task.deadline <= endOfMonth
     );
 };
+
 const generateEvaluationEmail = (data) => {
     return `
     <!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Evaluation Report</title>
-      <style>
-      * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          font-family: Arial, sans-serif;
-      }
-  
-      body {
-          background: #f0f0f0;
-          min-height: 100vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          padding: 20px;
-      }
-  
-      .report-card {
-          background: white;
-          width: 100%;
-          max-width: 800px;
-          border: 1px solid #ccc;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      }
-  
-      .header {
-          background: #00A7E1;
-          color: white;
-          padding: 15px;
-      }
-  
-      .logo-section {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-      }
-  
-      .logo {
-          width: 120px;
-          height: auto;
-      }
-  
-      .title {
-          text-align: center;
-      }
-  
-      .title h1 {
-          font-size: 24px;
-          margin-bottom: 5px;
-      }
-  
-      .title h2 {
-          font-size: 18px;
-          font-weight: normal;
-      }
-  
-      .profile {
-          display: flex;
-          gap: 20px;
-          padding: 20px;
-          border-bottom: 2px solid #00A7E1;
-      }
-  
-      .photo-frame {
-          width: 150px;
-          height: 150px;
-          border: 2px solid #00A7E1;
-          background-color: #f5f5f5;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #00A7E1;
-          font-weight: bold;
-      }
-  
-      .info {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          gap: 10px;
-          font-size: 16px;
-      }
-  
-      .info span {
-          font-weight: bold;
-      }
-  
-      .evaluation-section {
-          padding: 20px;
-      }
-  
-      .evaluation-section h2 {
-          text-align: center;
-          font-size: 24px;
-          margin-bottom: 30px;
-          position: relative;
-      }
-  
-      .evaluation-section h2::after {
-          content: '';
-          position: absolute;
-          bottom: -10px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 250px;
-          height: 2px;
-          background: #00A7E1;
-      }
-  
-      .metrics {
-          display: flex;
-          justify-content: space-around;
-          margin-top: 40px;
-      }
-  
-      .metric {
-          text-align: center;
-      }
-  
-      .circle {
-          width: 120px;
-          height: 120px;
-          border-radius: 50%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          position: relative;
-          margin-bottom: 10px;
-          background: conic-gradient(
-              #00A7E1 0% ${data.tasksDeadline}%,
-              #f0f0f0 ${data.tasksDeadline}% 100%
-          );
-      }
-  
-      .metric:nth-child(2) .circle {
-          background: conic-gradient(
-              #00A7E1 0% ${data.behavior}%,
-              #f0f0f0 ${data.behavior}% 100%
-          );
-      }
-  
-      .metric:nth-child(3) .circle {
-          background: conic-gradient(
-              #00A7E1 0% ${data.groupInteraction}%,
-              #f0f0f0 ${data.groupInteraction}% 100%
-          );
-      }
-  
-      .circle-inner {
-          width: 100px;
-          height: 100px;
-          background: white;
-          border-radius: 50%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-      }
-  
-      .percentage {
-          font-size: 24px;
-          font-weight: bold;
-          color: #00A7E1;
-      }
-  
-      .check {
-          position: absolute;
-          top: -5px;
-          right: -5px;
-          width: 25px;
-          height: 25px;
-          background: #00A7E1;
-          border-radius: 50%;
-          color: white;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: 14px;
-      }
-  
-      .performance {
-          display: flex;
-          justify-content: space-around;
-          align-items: flex-start;
-          padding: 20px;
-          margin-top: 20px;
-      }
-  
-       .gauge-section {
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Evaluation Report</title>
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+    
+        body {
+            background: #f0f0f0;
+            padding: 20px;
+        }
+    
+        .report-card {
+            background: white;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    
+        .header {
+            background: #00A7E1;
+            color: white;
+            padding: 15px;
+        }
+    
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+    
+        .logo {
+            width: 80px;
+            height: auto;
+            display: none; /* إخفاء اللوجوه في الهواتف */
+        }
+    
+        .title {
             text-align: center;
-            margin: 20px;
+            order: 2;
+        }
+    
+        .title h1 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+    
+        .title h2 {
+            font-size: 16px;
+            font-weight: normal;
+        }
+    
+        .profile {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            border-bottom: 2px solid #00A7E1;
+            align-items: center;
+        }
+    
+        .photo-frame {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #00A7E1;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00A7E1;
+            font-weight: bold;
+            font-size: 40px;
+        }
+    
+        .info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+            font-size: 16px;
+            text-align: center;
+            width: 100%;
+        }
+    
+        .info span {
+            font-weight: bold;
+        }
+    
+        .evaluation-section {
+            padding: 20px;
+        }
+    
+        .evaluation-section h2 {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+    
+        .evaluation-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 2px;
+            background: #00A7E1;
+        }
+    
+        .metrics {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-top: 30px;
+        }
+    
+        .metric {
+            text-align: center;
+        }
+    
+        .circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin: 0 auto 10px;
+            background: conic-gradient(
+                #00A7E1 0% ${data.tasksDeadline}%,
+                #f0f0f0 ${data.tasksDeadline}% 100%
+            );
+        }
+    
+        .metric:nth-child(2) .circle {
+            background: conic-gradient(
+                #00A7E1 0% ${data.behavior}%,
+                #f0f0f0 ${data.behavior}% 100%
+            );
+        }
+    
+        .metric:nth-child(3) .circle {
+            background: conic-gradient(
+                #00A7E1 0% ${data.groupInteraction}%,
+                #f0f0f0 ${data.groupInteraction}% 100%
+            );
+        }
+    
+        .circle-inner {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    
+        .percentage {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00A7E1;
+        }
+    
+        .check {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: #00A7E1;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+        }
+    
+        .performance {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            align-items: center;
+        }
+    
+        .gauge-section {
+            text-align: center;
+            margin: 0;
+            width: 100%;
+            max-width: 300px;
         }
         
         .gauge-container {
             position: relative;
-            width: 200px;
-            height: 100px;
+            width: 100%;
+            height: 0;
+            padding-bottom: 50%; /* نسبة العرض إلى الارتفاع */
             margin: 0 auto;
         }
         
         .gauge {
-            width: 200px;
-            height: 100px;
-            background: linear-gradient(to right, #ff4d4d 0%, #ffdd4d 50%, #4dff4d 100%);
-            border-radius: 100px 100px 0 0;
             position: absolute;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, #ff4d4d 0%, #ffdd4d 50%, #4dff4d 100%);
+            border-radius: 50% 50% 0 0 / 100% 100% 0 0;
             overflow: hidden;
         }
         
- 
-        
         .scale {
             position: absolute;
-            top: 10px;
+            top: 10%;
             left: 0;
             right: 0;
             display: flex;
             justify-content: space-between;
-            padding: 0 30px;
-            font-size: 24px;
+            padding: 0 15%;
+            font-size: 20px;
             z-index: 2;
         }
         
@@ -1111,8 +1120,8 @@ const generateEvaluationEmail = (data) => {
             position: absolute;
             bottom: 0;
             left: 50%;
-            width: 4px;
-            height: 80px;
+            width: 3px;
+            height: 50%;
             background: #333;
             transform: rotate(${data.technicalPerformance * 1.8 - 90}deg);
             transform-origin: bottom center;
@@ -1120,167 +1129,243 @@ const generateEvaluationEmail = (data) => {
         }
         
         .gauge-label {
-            margin-top: 10px;
+            margin-top: 15px;
         }
         
         .gauge-label .value {
             color: #00A7E1;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             margin-top: 5px;
         }
-  
-      .total {
-          background: #00A7E1;
-          color: white;
-          padding: 20px;
-          border-radius: 8px;
-          text-align: center;
-          min-width: 200px;
-      }
-  
-      .total h3 {
-          font-size: 20px;
-          margin-bottom: 10px;
-      }
-  
-      .total .score {
-          font-size: 48px;
-          font-weight: bold;
-      }
-  
-      .awards {
-          padding: 20px;
-          border-top: 2px solid #00A7E1;
-      }
-  
-      .awards h2 {
-          text-align: center;
-          font-size: 24px;
-          margin-bottom: 30px;
-          position: relative;
-      }
-  
-      .awards h2::after {
-          content: '';
-          position: absolute;
-          bottom: -10px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 250px;
-          height: 2px;
-          background: #00A7E1;
-      }
-  
-      .award-slots {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
-          margin-top: 20px;
-      }
-  
-      .slot {
-          aspect-ratio: 1;
-          border: 2px solid #00A7E1;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 10px;
-          text-align: center;
-          background-color: #f5f5f5;
-      }
-      </style>
-  </head>
-  <body>
-      <div class="report-card">
-          <div class="header">
-              <div class="logo-section">
-                  <img src="https://i.ibb.co/VxmYBdm/logo.png" alt="Company Logo" class="logo">
-                  <div class="title">
-                      <h1>Evaluation Report</h1>
-                      <h2>${data.monthYear || 'March 2025'}</h2>
-                  </div>
-                  <img src="https://i.ibb.co/VxmYBdm/logo.png" alt="Company Logo" class="logo">
-              </div>
-          </div>
-  
-          <div class="profile">
-              <div class="photo-frame">${data.name.charAt(0)}</div>
-              <div class="info">
-                  <p><span>Name:</span> ${data.name}</p>
-                  <p><span>Committee:</span> ${data.committee}</p>
-                  <p><span>Role:</span> ${data.role}</p>
-              </div>
-          </div>
-  
-          <div class="evaluation-section">
-              <h2>Evaluation Metrics</h2>
-              <div class="metrics">
-                  <div class="metric">
-                      <div class="circle">
-                          <div class="circle-inner">
-                              <div class="percentage">${data.tasksDeadline}%</div>
-                          </div>
-                          ${data.tasksDeadline >= 90 ? '<div class="check">✓</div>' : ''}
-                      </div>
-                      <p>Tasks at deadline</p>
-                  </div>
-                  <div class="metric">
-                      <div class="circle">
-                          <div class="circle-inner">
-                              <div class="percentage">${data.behavior}%</div>
-                          </div>
-                          ${data.behavior >= 90 ? '<div class="check">✓</div>' : ''}
-                      </div>
-                      <p>Behavior</p>
-                  </div>
-                  <div class="metric">
-                      <div class="circle">
-                          <div class="circle-inner">
-                              <div class="percentage">${data.groupInteraction}%</div>
-                          </div>
-                          ${data.groupInteraction >= 90 ? '<div class="check">✓</div>' : ''}
-                      </div>
-                      <p>Group interaction</p>
-                  </div>
-              </div>
-          </div>
-  
-          <div class="performance">
-               <div class="gauge-section">
-        <div class="gauge-container">
-            <div class="gauge">
-                <div class="pointer"></div>
+    
+        .total {
+            background: #00A7E1;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            width: 100%;
+            max-width: 200px;
+        }
+    
+        .total h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+    
+        .total .score {
+            font-size: 36px;
+            font-weight: bold;
+        }
+    
+        .awards {
+            padding: 20px;
+            border-top: 2px solid #00A7E1;
+        }
+    
+        .awards h2 {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+    
+        .awards h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 2px;
+            background: #00A7E1;
+        }
+    
+        .award-slots {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+    
+        .slot {
+            min-height: 80px;
+            border: 2px solid #00A7E1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+    
+        /* وسائط الاستعلام للشاشات المتوسطة والكبيرة */
+        @media (min-width: 600px) {
+            .logo-section {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .logo {
+                display: block;
+                width: 100px;
+            }
+            
+            .title {
+                order: unset;
+            }
+            
+            .profile {
+                flex-direction: row;
+                align-items: flex-start;
+                text-align: left;
+            }
+            
+            .info {
+                text-align: left;
+            }
+            
+            .metrics {
+                flex-direction: row;
+                justify-content: space-around;
+            }
+            
+            .performance {
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+            }
+            
+            .award-slots {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    
+        @media (min-width: 768px) {
+            .title h1 {
+                font-size: 24px;
+            }
+            
+            .title h2 {
+                font-size: 18px;
+            }
+            
+            .photo-frame {
+                width: 150px;
+                height: 150px;
+                font-size: 60px;
+            }
+            
+            .circle {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .circle-inner {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .percentage {
+                font-size: 24px;
+            }
+        }
+        </style>
+    </head>
+    <body>
+        <div class="report-card">
+            <div class="header">
+                <div class="logo-section">
+                    <img src="https://i.ibb.co/VxmYBdm/logo.png" alt="Company Logo" class="logo">
+                    <div class="title">
+                        <h1>Evaluation Report</h1>
+                        <h2>${data.monthYear || 'March 2025'}</h2>
+                    </div>
+                    <img src="https://i.ibb.co/VxmYBdm/logo.png" alt="Company Logo" class="logo">
+                </div>
             </div>
-            <div class="circle-inner-gauge">
-                <div class="percentage">${data.technicalPerformance}%</div>
+    
+            <div class="profile">
+                <div class="photo-frame">${data.name.charAt(0)}</div>
+                <div class="info">
+                    <p><span>Name:</span> ${data.name}</p>
+                    <p><span>Committee:</span> ${data.committee}</p>
+                    <p><span>Role:</span> ${data.role}</p>
+                </div>
+            </div>
+    
+            <div class="evaluation-section">
+                <h2>Evaluation Metrics</h2>
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="circle">
+                            <div class="circle-inner">
+                                <div class="percentage">${data.tasksDeadline}%</div>
+                            </div>
+                            ${data.tasksDeadline >= 90 ? '<div class="check">✓</div>' : ''}
+                        </div>
+                        <p>Tasks at deadline</p>
+                    </div>
+                    <div class="metric">
+                        <div class="circle">
+                            <div class="circle-inner">
+                                <div class="percentage">${data.behavior}%</div>
+                            </div>
+                            ${data.behavior >= 90 ? '<div class="check">✓</div>' : ''}
+                        </div>
+                        <p>Behavior</p>
+                    </div>
+                    <div class="metric">
+                        <div class="circle">
+                            <div class="circle-inner">
+                                <div class="percentage">${data.groupInteraction}%</div>
+                            </div>
+                            ${data.groupInteraction >= 90 ? '<div class="check">✓</div>' : ''}
+                        </div>
+                        <p>Group interaction</p>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="performance">
+                <div class="gauge-section">
+                    <div class="gauge-container">
+                        <div class="gauge">
+                            <div class="scale">
+                                <span>😠</span>
+                                <span>😐</span>
+                                <span>😊</span>
+                            </div>
+                            <div class="pointer"></div>
+                        </div>
+                    </div>
+                    <div class="gauge-label">
+                        <p>Technical performance level</p>
+                        <p class="value">${data.technicalPerformance}%</p>
+                    </div>
+                </div>
+    
+                <div class="total">
+                    <h3>Total<br>Evaluation %</h3>
+                    <div class="score">${data.total}%</div>
+                </div>
+            </div>
+    
+            <div class="awards">
+                <h2>Awards of the month</h2>
+                <div class="award-slots">
+                    ${data.awards.map(award => `<div class="slot">${award || ''}</div>`).join('')}
+                </div>
             </div>
         </div>
-        <div class="gauge-label">
-            <p>Technical performance level</p>
-            <p class="value">${data.technicalPerformance}%</p>
-        </div>
-    </div>
-  
-              <div class="total">
-                  <h3>Total<br>Evaluation %</h3>
-                  <div class="score">${data.total}%</div>
-              </div>
-          </div>
-  
-          <div class="awards">
-              <h2>Awards of the month</h2>
-              <div class="award-slots">
-                  ${data.awards.map(award => `<div class="slot">${award || ''}</div>`).join('')}
-              </div>
-          </div>
-      </div>
-  </body>
-  </html>
-  `;
-  };
-  
+    </body>
+    </html>
+    `;
+};
+
+
   // مثال لاستخدام الدالة
   const evaluationData = {
     name: "Afnan Zakaria",
