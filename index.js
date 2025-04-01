@@ -87,18 +87,42 @@ app.get('/webhook', (req, res) => {
 
 // إعداد endpoint لاستقبال بيانات الـ Webhook (POST)
 app.post('/webhook', (req, res) => {
-  const body = req.body;
-  
-  // تأكد من أن الحدث من صفحة
-  if (body.object === 'page') {
-    body.entry.forEach(entry => {
-      console.log('Received webhook event:', entry);
-      // هنا تقدر تعالج وتحفظ البيانات في قاعدة البيانات
-    });
-    // الرد لفيسبوك إن الحدث استُلم
-    res.status(200).send('EVENT_RECEIVED');
-  } else {
-    res.sendStatus(404);
+  try {
+    const body = req.body;
+    
+    // تأكد من أن الحدث من صفحة
+    if (body.object === 'page') {
+      body.entry.forEach(entry => {
+        console.log('Received webhook event:', JSON.stringify(entry, null, 2)); // طباعة الـ entry كاملة
+
+        // معالجة البيانات الخاصة بالـ feed
+        if (entry.messaging) {
+          entry.messaging.forEach(event => {
+            if (event.message && event.message.text) {
+              console.log('Received message:', event.message.text);
+              // هنا تقدر تعالج وتحفظ البيانات في قاعدة البيانات
+            }
+
+            // إضافة رياكشنات أو تعليقات
+            if (event.reaction) {
+              console.log('Received reaction:', event.reaction);
+              // هنا تقدر تعالج وتحفظ بيانات الرياكشن
+            }
+            
+            if (event.comment) {
+              console.log('Received comment:', event.comment);
+              // هنا تقدر تعالج وتحفظ بيانات التعليق
+            }
+          });
+        }
+      });
+
+      // الرد لفيسبوك إن الحدث استُلم
+      res.status(200).send('EVENT_RECEIVED');
+    } 
+  } catch (error) {
+    console.error('Error processing webhook:', error);
+    res.status(500).send('Error processing webhook');
   }
 });
 
