@@ -174,6 +174,7 @@ const memberSchema = new mongoose.Schema({
 
 
   visits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Visits' }],
+  feedBacks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FeedBack' }],
 })
 
 const createError = require("../utils/createError");

@@ -63,7 +63,7 @@ app.use(loggerMiddleware);
 
 app.get('/webhook', (req, res) => {
   // ضع هنا verify token اللي هتختاره (مثلاً: MY_VERIFY_TOKEN)
-  const VERIFY_TOKEN = "MY_VERIFY_TOKEN";
+  const VERIFY_TOKEN = "assiut_robotics_123";
   
   const mode = req.query['hub.mode'];
   const token = req.query['hub.verify_token'];
