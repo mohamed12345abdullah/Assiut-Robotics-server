@@ -1334,9 +1334,7 @@ const generateEvaluationEmail = (data) => {
                     <div class="gauge-container">
                         <div class="gauge">
                             <div class="scale">
-                                <span>😠</span>
-                                <span>😐</span>
-                                <span>😊</span>
+                         
                             </div>
                             <div class="pointer"></div>
                         </div>
