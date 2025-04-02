@@ -33,6 +33,7 @@ const getAnnouncements = asyncWrapper(async (req, res, next) => {
         }
     });
 
+    const announcements = await Announcement.find();
     res.status(200).json({
         status: httpStatusText.SUCCESS,
         data: announcements,
