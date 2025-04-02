@@ -13,7 +13,8 @@ const announcementSchema = new mongoose.Schema({
     dateOfDelete: {
         type: Date,
         default: Date.now
-    }
+    },
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' }
 });
 
 const announcement = mongoose.model("announcement", announcementSchema);

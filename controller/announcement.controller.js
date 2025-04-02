@@ -8,13 +8,23 @@ const createError = require("../utils/createError");
 
 const bcrypt = require("../middleware/bcrypt");
 
+const Member=require("../mongoose.models/member");
 
 const addAnnouncement = asyncWrapper(async (req, res, next) => {
     const { title, content ,dateOfDelete} = req.body;
+    const email= req.decoded.email;
+    const member= await Member.findOne({email});
+    if (!member) {
+        const error = createError(404, httpStatusText.FAIL, "Member not found");
+        throw error;
+    }
+
+
     const newAnnouncement = new Announcement({
         title,
         content,
-        dateOfDelete
+        dateOfDelete,
+        creator:member._id
     });
     await newAnnouncement.save();
     res.status(201).json({
@@ -25,7 +35,8 @@ const addAnnouncement = asyncWrapper(async (req, res, next) => {
 })
 
 const getAnnouncements = asyncWrapper(async (req, res, next) => {
-    let announcements = await Announcement.find();
+    let announcements = await Announcement.find()
+    .populate('creator', 'name email committee phoneNumber avatar');
     // delete announcement that dateOfDelete is passed
     const now = new Date();
     now.setHours(0, 0, 0, 0);
@@ -77,6 +88,15 @@ const deleteAnnouncement = asyncWrapper(async (req, res, next) => {
         message: "Announcement deleted successfully"
     });
 })
+
+
+
+const deleteAll = asyncWrapper(async (req, res, next) => {
+    const announcements = await Announcement.deleteMany();
+    console.log("Announcements deleted: ", announcements);
+})
+
+// deleteAll()
 
 module.exports = {
     addAnnouncement,
