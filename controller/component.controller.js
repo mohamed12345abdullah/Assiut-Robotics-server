@@ -48,7 +48,7 @@ const addComponent = async (req, res) => {
 
 const getCombonent =asyncWrapper( async (req, res) => {
 
-        const components = await component.find({})
+        const components = await component.find({deleted:false})
         .populate('requestToBorrow', 'name email committee  phoneNumber avatar')
         .populate('borrowedBy.member', 'name email committee  phoneNumber avatar')
         .populate('history.member', 'name email committee phoneNumber avatar') 
@@ -96,6 +96,12 @@ const deleteOne = async (req, res) => {
     try {
         console.log("delete one");
         const id = req.body.id;
+        const email=req.decoded.email;
+        const member=await Member.findOne({email});
+        if(!member){
+            const error=createError(400, 'Fail',"member not found");
+            throw(error);
+        }
         if(!id){
             const error=createError(400, 'Fail',"id is required");
             throw(error);
@@ -106,6 +112,7 @@ const deleteOne = async (req, res) => {
             throw(error);
         }
         mycomponent.deleted = true;
+        mycomponent.deletedBy = member._id;
         await mycomponent.save();
 
         res.status(200).send({ message: "deleted" });
@@ -309,7 +316,16 @@ const rejectRequestToBorrow= asyncWrapper(async (req, res) => {
 
   const getHistoryComponent = asyncWrapper(async (req, res) => {
     const components = await component.find({ history: { $ne: [] } })
+    .populate('creation.createdBy', 'name email committee phoneNumber avatar') 
+    .populate('historyOfUpdate.updatedBy', 'name email committee phoneNumber avatar')
     .populate('history.member', 'name email committee phoneNumber avatar') 
+    .populate('requestToBorrow', 'name email committee phoneNumber avatar') 
+    .populate('borrowedBy.member', 'name email committee phoneNumber avatar') 
+    .populate('borrowedBy.acceptedBy', 'name email committee phoneNumber avatar') 
+    .populate('history.returnBy', 'name email committee phoneNumber avatar') 
+    .populate('history.acceptedBy', 'name email committee phoneNumber avatar') 
+    .populate('deletedBy', 'name email committee phoneNumber avatar') 
+
     if(!components){
         const error=createError(400, 'Fail',"components not found");
         throw(error);

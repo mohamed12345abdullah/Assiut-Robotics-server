@@ -10,6 +10,7 @@ const componentSchema = new mongoose.Schema({
   total: { type: Number },
   category: { type: String },
   deleted: { type: Boolean, default: false },
+  deletedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' },
   creation: { 
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' },
     createdAt: { type: Date, default: Date.now },
