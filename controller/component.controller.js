@@ -12,6 +12,9 @@ const asyncWrapper = require("../middleware/asyncWrapper");
 const createError = require("../utils/createError");
 const Member = require("../mongoose.models/member");
 
+
+
+
 const addComponent = async (req, res) => {
     try {
         const email=req.decoded.email;
@@ -47,17 +50,20 @@ const addComponent = async (req, res) => {
 }; 
 
 const getCombonent =asyncWrapper( async (req, res) => {
-
-        const components = await component.find({deleted:false})
+  
+        const components = await component.find({deleted: false})
         .populate('requestToBorrow', 'name email committee  phoneNumber avatar')
         .populate('borrowedBy.member', 'name email committee  phoneNumber avatar')
         .populate('history.member', 'name email committee phoneNumber avatar') 
 
-        if(!components){
+        let data=components.filter(component=>
+            component.deleted === false
+        );
+        if(!data){
             const error=createError(400, 'Fail',"components not found");
             throw(error);
         }
-        res.status(200).send({ message: "get daa sucessfully", data: components });
+        res.status(200).send({ message: "get data successfully", data: data });
 
 });
 
