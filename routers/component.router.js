@@ -89,7 +89,7 @@ Router.route("/rejectRequestToBorrow").post(JWT.verify,OC_validate,componentCont
 Router.route("/getRequestedComponent").get(JWT.verify,OC_validate,componentController.getRequestedComponent);
 Router.route("/getBorrowedComponent").get(JWT.verify,OC_validate,componentController.getBorrowedComponent);
 Router.route("/getHistoryComponent").get(JWT.verify,OC_validate,componentController.getHistoryComponent);
-
+Router.route("/getDeletedComponent").get(componentController.getDeletedComponent);
 
 
 module.exports = Router;

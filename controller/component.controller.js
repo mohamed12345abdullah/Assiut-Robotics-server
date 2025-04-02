@@ -333,6 +333,27 @@ const rejectRequestToBorrow= asyncWrapper(async (req, res) => {
     res.status(200).json({ message: "get history components successfully", data: components });
   }); 
 
+
+
+  const getDeletedComponent = asyncWrapper(async (req, res) => {
+    const components = await component.find({ deleted: true })
+    .populate('creation.createdBy', 'name email committee phoneNumber avatar') 
+    .populate('historyOfUpdate.updatedBy', 'name email committee phoneNumber avatar')
+    .populate('history.member', 'name email committee phoneNumber avatar') 
+    .populate('requestToBorrow', 'name email committee phoneNumber avatar') 
+    .populate('borrowedBy.member', 'name email committee phoneNumber avatar') 
+    .populate('borrowedBy.acceptedBy', 'name email committee phoneNumber avatar') 
+    .populate('history.returnBy', 'name email committee phoneNumber avatar') 
+    .populate('history.acceptedBy', 'name email committee phoneNumber avatar') 
+    .populate('deletedBy', 'name email committee phoneNumber avatar') 
+
+    if(!components){
+        const error=createError(400, 'Fail',"components not found");
+        throw(error);
+    }
+    res.status(200).json({ message: "get deleted components successfully", data: components });
+  });
+
 module.exports = {
     addComponent,
     getCombonent,
@@ -344,5 +365,6 @@ module.exports = {
     rejectRequestToBorrow,
     getRequestedComponent,
     getBorrowedComponent,
-    getHistoryComponent 
+    getHistoryComponent,
+    getDeletedComponent
 };
