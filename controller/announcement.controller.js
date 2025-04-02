@@ -49,8 +49,8 @@ const getAnnouncements = asyncWrapper(async (req, res, next) => {
     });
 
     announcements = await Announcement.find()
-    .populate('creator', 'name email committee phoneNumber avatar');
-    
+    .populate('creator', 'name email role committee phoneNumber avatar');
+
     res.status(200).json({
         status: httpStatusText.SUCCESS,
         data: announcements,
