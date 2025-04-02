@@ -27,8 +27,12 @@ const addAnnouncement = asyncWrapper(async (req, res, next) => {
 const getAnnouncements = asyncWrapper(async (req, res, next) => {
     let announcements = await Announcement.find();
     // delete announcement that dateOfDelete is passed
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    
     announcements.forEach(async (announcement) => {
-        if (announcement.dateOfDelete <= new Date()) {
+        if (announcement.dateOfDelete < now) {
+            console.log("Announcement deleted: ", announcement.title);
             await announcement.deleteOne();
         }
     });
