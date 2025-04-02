@@ -8,6 +8,8 @@ const blogRouter = require('./routers/blog.router')
 const componentRouter = require('./routers/component.router')
 const lapDateRouter=require('./routers/lapDates.js')
 const visitRouter=require('./routers/visit.js')
+const electricRouter = require('./routers/electric');
+const announcementRouter = require('./routers/announcement');
 // status text
 const httpStatusText = require('./utils/httpStatusText');
 
@@ -33,23 +35,10 @@ app.use("/uploads", express.static(__dirname + "/uploads"))
 app.use("/members", memberRouter);
 app.use('/blogs', blogRouter);
 app.use('/components', componentRouter);
-
-// apis for borrow and return
-// borrow api is :  /components/borrow
-// return api is : /components/return
-
-
-
 app.use("/lapDates",lapDateRouter);
-
-
 app.use("/visitor",visitRouter);
-// app.get("/", async
-// })
-
-const electricRouter = require('./routers/electric');
 app.use("/electric", electricRouter);
-
+app.use("/announcement", announcementRouter);
 // const committeeRouter = require('./routers/committee.router');
 // app.use('/api/committees', committeeRouter);
 
