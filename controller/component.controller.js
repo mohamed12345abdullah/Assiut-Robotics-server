@@ -14,23 +14,13 @@ const Member = require("../mongoose.models/member");
 
 const addComponent = async (req, res) => {
     try {
-
-
-
-        // if (!req.file) {
-        //     return res.status(400).send('No file uploaded.');
-        // }
-
-        // // Upload image to Cloudinary using the utility function
-        // const imageUrl = await uploadToCloud(req.file.path); // Passing the file path to Cloudinary
-
-       console.log("body : : ",);
-
+        const email=req.decoded.email;
+        const member=await Member.findOne({email});
+        if(!member){
+            const error=createError(400, 'Fail',"member not found");
+            throw(error);
+        }
         const { title, price, taxes, ads, discount, total, category } = req.body;
-
-        //console.log(req.file.originalname);
-        // const component_image=await cloudinary.uploadToCloud(req.myFileName) ;
-        // console.log("file name",req.myFileName);
         const newComponent = await new component({
             title,
             image:req.imageUrl,
@@ -40,6 +30,10 @@ const addComponent = async (req, res) => {
             discount,
             total,
             category,
+            creation:{
+                createdBy:member._id,
+                createdAt:Date.now()
+            }
         });
 
         await newComponent.save();
@@ -71,8 +65,24 @@ const getCombonent =asyncWrapper( async (req, res) => {
 const updateComponent = async (req, res) => {
     try {
         console.log(req.body);
-        // const {id, title,  price, taxes , ads, discount, total, category } = req.body;
-        await component.findByIdAndUpdate(req.body.id, req.body.newpro);
+        const email=req.decoded.email;
+        
+        const member=await Member.findOne({email});
+        if(!member){
+            const error=createError(400, 'Fail',"member not found");
+            throw(error);
+        }
+
+        const updatedComponent = await component.findByIdAndUpdate(req.body.id, req.body.newpro);
+        if(!updatedComponent){
+            const error=createError(400, 'Fail',"component not found");
+            throw(error);
+        }
+        updatedComponent.historyOfUpdate.push({
+            updatedBy: member._id,
+            updatedAt: Date.now()
+        });
+        await updatedComponent.save();
 
         res.status(200).send({ message: "updated" });
     } catch (error) {
@@ -90,13 +100,13 @@ const deleteOne = async (req, res) => {
             const error=createError(400, 'Fail',"id is required");
             throw(error);
         }
-        const mycomponent = await component.findByIdAndDelete(id);
+        const mycomponent = await component.findById(id);
         if(!mycomponent){
             const error=createError(400, 'Fail',"component not found");
             throw(error);
         }
-        // await mycomponent.remove();
-        // await component.save();
+        mycomponent.deleted = true;
+        await mycomponent.save();
 
         res.status(200).send({ message: "deleted" });
     } catch (error) {
@@ -194,7 +204,12 @@ const requestToBorrow= asyncWrapper(async (req, res) => {
 const acceptRequestToBorrow= asyncWrapper(async (req, res) => {
 
     const {componentId,borrowDate,deadlineDate} = req.body;
-
+    const email=req.decoded.email;
+    const member=await Member.findOne({email});
+    if(!member){
+        const error=createError(400, 'Fail',"member not found");
+        throw(error);
+    }
     if(!borrowDate || !deadlineDate){
         const error=createError(400, 'Fail',"borrowDate and deadlineDate are required");
         throw(error);
@@ -215,7 +230,8 @@ const acceptRequestToBorrow= asyncWrapper(async (req, res) => {
     updatedComponent.borrowedBy = {
         member: updatedComponent.requestToBorrow,
         borrowDate: borrowDate,
-        deadlineDate: deadlineDate
+        deadlineDate: deadlineDate,
+        acceptedBy: member._id
     };
     updatedComponent.requestToBorrow = null;
     await updatedComponent.save();
@@ -242,10 +258,26 @@ const rejectRequestToBorrow= asyncWrapper(async (req, res) => {
   // إرجاع مكون
   const returnComponent = asyncWrapper(async (req, res) => {
     const {componentId} = req.body;
+    const email=req.decoded.email;
+    const member=await Member.findOne({email});
+    if(!member){
+        const error=createError(400, 'Fail',"member not found");
+        throw(error);
+    }
     const updatedComponent = await component.findById(componentId)
 
     updatedComponent.borrowedBy.returnDate = new Date();
-    updatedComponent.history.push(updatedComponent.borrowedBy);
+    updatedComponent.history.push(
+        {
+            member: updatedComponent.borrowedBy.member,
+            acceptedBy: updatedComponent.borrowedBy.acceptedBy,
+            borrowDate: updatedComponent.borrowedBy.borrowDate,
+            deadlineDate: updatedComponent.borrowedBy.deadlineDate,
+            returnDate: updatedComponent.borrowedBy.returnDate,
+            returnBy: member._id
+        }
+    );
+
     updatedComponent.borrowedBy = null;
     await updatedComponent.save();
 

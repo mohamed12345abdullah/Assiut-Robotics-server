@@ -9,7 +9,17 @@ const componentSchema = new mongoose.Schema({
   discount: { type: Number },
   total: { type: Number },
   category: { type: String },
-
+  deleted: { type: Boolean, default: false },
+  creation: { 
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' },
+    createdAt: { type: Date, default: Date.now },
+  },
+  historyOfUpdate: [
+    {
+      updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' },
+      updatedAt: { type: Date, default: Date.now },
+    }
+  ],
   requestToBorrow:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Member',
@@ -19,6 +29,7 @@ const componentSchema = new mongoose.Schema({
   borrowedBy: { 
     type: {
       member: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' },
+      acceptedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' },
       borrowDate: { type: Date, default: null },
       deadlineDate: { type: Date, default: null },
       returnDate: { type: Date, default: null },
@@ -29,9 +40,11 @@ const componentSchema = new mongoose.Schema({
     type: [
       {
         member: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' },
+        acceptedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' },
         borrowDate: { type: Date, default: null },
         deadlineDate: { type: Date, default: null },
         returnDate: { type: Date, default: null },
+        returnBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' },
       }
     ],
     default: []
