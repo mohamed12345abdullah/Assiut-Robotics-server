@@ -35,9 +35,9 @@ const addAnnouncement = asyncWrapper(async (req, res, next) => {
 })
 
 const getAnnouncements = asyncWrapper(async (req, res, next) => {
-    let announcements = await Announcement.find()
-    .populate('creator', 'name email committee phoneNumber avatar');
+    let announcements = await Announcement.find({})
     // delete announcement that dateOfDelete is passed
+
     const now = new Date();
     now.setHours(0, 0, 0, 0);
     
@@ -48,7 +48,9 @@ const getAnnouncements = asyncWrapper(async (req, res, next) => {
         }
     });
 
-    announcements = await Announcement.find();
+    announcements = await Announcement.find()
+    .populate('creator', 'name email committee phoneNumber avatar');
+    
     res.status(200).json({
         status: httpStatusText.SUCCESS,
         data: announcements,
