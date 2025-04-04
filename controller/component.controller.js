@@ -33,10 +33,10 @@ const addComponent = async (req, res) => {
             discount,
             total,
             category,
-            creation:{
-                createdBy:member._id,
-                createdAt:Date.now()
-            }
+            // creation:{
+            //     createdBy:member._id,
+            //     createdAt:Date.now()
+            // }
         });
 
         await newComponent.save();
@@ -52,9 +52,6 @@ const addComponent = async (req, res) => {
 const getCombonent =asyncWrapper( async (req, res) => {
   
         const components = await component.find({deleted: false})
-        .populate('requestToBorrow', 'name email committee  phoneNumber avatar')
-        .populate('borrowedBy.member', 'name email committee  phoneNumber avatar')
-        .populate('history.member', 'name email committee phoneNumber avatar') 
 
         let data=components.filter(component=>
             component.deleted === false
@@ -135,47 +132,7 @@ const deleteOne = async (req, res) => {
 
 // request to borrow 
 
-const sendNotification =       async (memberEmail, componentId) => {
-    try {
-        const member = await Member.findOne({email:memberEmail});
-        const updateComponent = await component.findById(componentId);
-        let sendTo=[];
-        const leader=await Member.find({role:'leader'},{email:1});
-        leader.forEach(item => sendTo.push(item.email));
-    const OC=await Member.find({committee:'OC'},{email:1});
-    OC.forEach(item => sendTo.push(item.email));
-    console.log(sendTo);
-    let notificationEmailHtml=fs.readFileSync(path.join(__dirname, '../public/notificationRequestToBorrow.html'), 'utf8');
-
-    // Replace placeholders with actual values
-    notificationEmailHtml = notificationEmailHtml
-        .replace('{{name}}', member.name)
-        .replace('{{email}}', member.email)
-        .replace('{{committee}}', member.committee)
-        .replace('{{phoneNumber}}', member.phoneNumber)
-        .replace('{{avatar}}', member.avatar)
-        .replace('{{componentName}}', updateComponent.title)
-        .replace('{{category}}', updateComponent.category)
-        .replace('{{componentImage}}', updateComponent.image);
-
-    sendTo.forEach(async email => {
-        await sendEmail({
-            email: email,
-            subject: "Request to Borrow - Assiut Robotics Team",
-            text: "Request to Borrow",
-            html: notificationEmailHtml
-        })
-    })
-
-    return;
-    } catch (error) {
-       return error;
-        
-    }
-    // Send notification to member
-    
-}
-    
+  
  
 
 // sendNotification('mohamed12345abdullah@gmail.com','67ad1ede84cf1154ac370b2b')
@@ -303,9 +260,10 @@ const rejectRequestToBorrow= asyncWrapper(async (req, res) => {
 
   const getRequestedComponent = asyncWrapper(async (req, res) => {
     const components = await component.find({ requestToBorrow: { $ne: null } })
-    .populate('requestToBorrow', 'name email committee  phoneNumber avatar')
-    .populate('borrowedBy.member', 'name email committee  phoneNumber avatar')
-    .populate('history.member', 'name email committee phoneNumber avatar') 
+    if(!components){
+        const error=createError(400, 'Fail',"components not found");
+        throw(error);
+    }
     res.status(200).json({ message: "get requested components successfully", data: components });
   });
 
@@ -322,15 +280,6 @@ const rejectRequestToBorrow= asyncWrapper(async (req, res) => {
 
   const getHistoryComponent = asyncWrapper(async (req, res) => {
     const components = await component.find({ history: { $ne: [] } })
-    .populate('creation.createdBy', 'name email committee phoneNumber avatar') 
-    .populate('historyOfUpdate.updatedBy', 'name email committee phoneNumber avatar')
-    .populate('history.member', 'name email committee phoneNumber avatar') 
-    .populate('requestToBorrow', 'name email committee phoneNumber avatar') 
-    .populate('borrowedBy.member', 'name email committee phoneNumber avatar') 
-    .populate('borrowedBy.acceptedBy', 'name email committee phoneNumber avatar') 
-    .populate('history.returnBy', 'name email committee phoneNumber avatar') 
-    .populate('history.acceptedBy', 'name email committee phoneNumber avatar') 
-    .populate('deletedBy', 'name email committee phoneNumber avatar') 
 
     if(!components){
         const error=createError(400, 'Fail',"components not found");
@@ -343,15 +292,6 @@ const rejectRequestToBorrow= asyncWrapper(async (req, res) => {
 
   const getDeletedComponent = asyncWrapper(async (req, res) => {
     const components = await component.find({ deleted: true })
-    .populate('creation.createdBy', 'name email committee phoneNumber avatar') 
-    .populate('historyOfUpdate.updatedBy', 'name email committee phoneNumber avatar')
-    .populate('history.member', 'name email committee phoneNumber avatar') 
-    .populate('requestToBorrow', 'name email committee phoneNumber avatar') 
-    .populate('borrowedBy.member', 'name email committee phoneNumber avatar') 
-    .populate('borrowedBy.acceptedBy', 'name email committee phoneNumber avatar') 
-    .populate('history.returnBy', 'name email committee phoneNumber avatar') 
-    .populate('history.acceptedBy', 'name email committee phoneNumber avatar') 
-    .populate('deletedBy', 'name email committee phoneNumber avatar') 
 
     if(!components){
         const error=createError(400, 'Fail',"components not found");

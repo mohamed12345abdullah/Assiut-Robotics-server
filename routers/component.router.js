@@ -8,18 +8,18 @@ const asyncWrapper = require("../middleware/asyncWrapper");
 const Member = require("../mongoose.models/member");
 const createError = require("../utils/createError");
 
-const OC_validate=asyncWrapper(async (req, res, next) => {
-    const email=req.decoded.email;
-    const  member= await Member.findOne({email});
+// const OC_validate=asyncWrapper(async (req, res, next) => {
+//     const email=req.decoded.email;
+//     const  member= await Member.findOne({email});
     
 
-    if (member.committee !== "OC" && member.role !== "leader") {
-        const error=createError(403, 'Fail',"this operation is only for OC")
-        throw(error);
-        return;
-    }
-    next();
-})
+//     if (member.committee !== "OC" && member.role !== "leader") {
+//         const error=createError(403, 'Fail',"this operation is only for OC")
+//         throw(error);
+//         return;
+//     }
+//     next();
+// })
 
 // Multer configuration
 const diskStorage = multer.diskStorage({
@@ -74,22 +74,22 @@ Router.route("/add").post(
 );
 Router.route("/getComponents").get(componentController.getCombonent);
 
-Router.route("/update").post(JWT.verify,OC_validate,componentController.updateComponent);
+Router.route("/update").post(JWT.verify,componentController.updateComponent);
 
-Router.route("/deleteOne").post(JWT.verify,OC_validate,componentController.deleteOne);
+Router.route("/deleteOne").post(JWT.verify,componentController.deleteOne);
 
 // Routes for borrowing and returning components
 // Router.route("/borrow").post(JWT.verify,OC_validate,componentController.borrowComponent);
-Router.route("/return").post(JWT.verify,OC_validate,componentController.returnComponent);
+// Router.route("/return").post(JWT.verify,OC_validate,componentController.returnComponent);
 
 // Routes for requested and borrowed components
-Router.route("/requestToBorrow").post(JWT.verify,componentController.requestToBorrow);
-Router.route("/acceptRequestToBorrow").post(JWT.verify,OC_validate,componentController.acceptRequestToBorrow);
-Router.route("/rejectRequestToBorrow").post(JWT.verify,OC_validate,componentController.rejectRequestToBorrow);
-Router.route("/getRequestedComponent").get(JWT.verify,OC_validate,componentController.getRequestedComponent);
-Router.route("/getBorrowedComponent").get(JWT.verify,OC_validate,componentController.getBorrowedComponent);
-Router.route("/getHistoryComponent").get(JWT.verify,OC_validate,componentController.getHistoryComponent);
-Router.route("/getDeletedComponent").get(componentController.getDeletedComponent);
+// Router.route("/requestToBorrow").post(JWT.verify,componentController.requestToBorrow);
+// Router.route("/acceptRequestToBorrow").post(JWT.verify,OC_validate,componentController.acceptRequestToBorrow);
+// Router.route("/rejectRequestToBorrow").post(JWT.verify,OC_validate,componentController.rejectRequestToBorrow);
+// Router.route("/getRequestedComponent").get(JWT.verify,OC_validate,componentController.getRequestedComponent);
+// Router.route("/getBorrowedComponent").get(JWT.verify,OC_validate,componentController.getBorrowedComponent);
+// Router.route("/getHistoryComponent").get(JWT.verify,OC_validate,componentController.getHistoryComponent);
+// Router.route("/getDeletedComponent").get(componentController.getDeletedComponent);
 
 
 module.exports = Router;
