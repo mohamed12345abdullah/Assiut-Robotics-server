@@ -10,6 +10,7 @@ const lapDateRouter=require('./routers/lapDates.js')
 const visitRouter=require('./routers/visit.js')
 const electricRouter = require('./routers/electric');
 const announcementRouter = require('./routers/announcement');
+const meetingRouter = require('./routers/meeting');
 // status text
 const httpStatusText = require('./utils/httpStatusText');
 
@@ -39,6 +40,8 @@ app.use("/lapDates",lapDateRouter);
 app.use("/visitor",visitRouter);
 app.use("/electric", electricRouter);
 app.use("/announcement", announcementRouter);
+app.use("/meeting", meetingRouter);
+
 // const committeeRouter = require('./routers/committee.router');
 // app.use('/api/committees', committeeRouter);
 
