@@ -70,15 +70,15 @@ const bookMeeting = asyncWrapper(async (req, res) => {
         return res.status(404).json({ status: 404, message: "Meeting not found" });
     }
 
-    let validateMember = false;
-    meeting.members.forEach(ele => {
-        if (ele._id == member._id) {
-            validateMember = true;
-        }
-    });
-    if (!validateMember) {
-        return res.status(400).json({ status: 400, message: "Member is not allowed to book this meeting" });
-    }
+    // let validateMember = false;
+    // meeting.members.forEach(ele => {
+    //     if (ele._id == member._id) {
+    //         validateMember = true;
+    //     }
+    // });
+    // if (!validateMember) {
+    //     return res.status(400).json({ status: 400, message: "Member is not allowed to book this meeting" });
+    // }
     const {timeId} = req.body;
     console.log("timeId",timeId);
     let Date = null;
