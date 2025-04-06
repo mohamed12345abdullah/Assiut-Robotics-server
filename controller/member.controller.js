@@ -1619,7 +1619,6 @@ const generateFeedBack = asyncWrapper(async (req, res) => {
     }
     
 
-    const evaluationTemplate = fs.readFileSync(path.join(__dirname, '../public/evaluation-template.html'), 'utf8');
 
     // Function to replace template values with actual data
     
@@ -1637,7 +1636,7 @@ const generateFeedBack = asyncWrapper(async (req, res) => {
     };
     
     // Generate the populated template
-    if(data.committee=='web'){
+    if(Member.committee=='web'){
         const populatedTemplate = generateEvaluationWebPage(evaluationData);
         res.end(populatedTemplate);
     }
