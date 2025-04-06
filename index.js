@@ -13,6 +13,8 @@ const announcementRouter = require('./routers/announcement');
 const meetingRouter = require('./routers/meeting');
 // status text
 const httpStatusText = require('./utils/httpStatusText');
+const webhookRoutes = require('./routers/webhook.router.js');
+
 
 //cors
 
@@ -41,6 +43,7 @@ app.use("/visitor",visitRouter);
 app.use("/electric", electricRouter);
 app.use("/announcement", announcementRouter);
 app.use("/meeting", meetingRouter);
+app.use('/webhook', webhookRoutes);
 
 // const committeeRouter = require('./routers/committee.router');
 // app.use('/api/committees', committeeRouter);
@@ -48,77 +51,6 @@ app.use("/meeting", meetingRouter);
 const loggerMiddleware = require("./middleware/loggerMiddleware");
 
 app.use(loggerMiddleware);
-
-
-
-
-
-app.get('/webhook', (req, res) => {
-  // ضع هنا verify token اللي هتختاره (مثلاً: MY_VERIFY_TOKEN)
-  const VERIFY_TOKEN = "assiut_robotics_123";
-  
-  const mode = req.query['hub.mode'];
-  const token = req.query['hub.verify_token'];
-  const challenge = req.query['hub.challenge'];
-
-  if (mode && token) {
-    if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-      console.log('WEBHOOK_VERIFIED');
-      res.status(200).send(challenge);
-    } else {
-      res.sendStatus(403);
-    }
-  }else{
-    res.status(400).json({ status: 400,data:{
-      mode,
-      token,
-      challenge
-    }, message: "Invalid parameters" });
-  }
-});
-
-// إعداد endpoint لاستقبال بيانات الـ Webhook (POST)
-app.post('/webhook', (req, res) => {
-  try {
-    const body = req.body;
-    console.log('Received webhook event:', JSON.stringify(body, null, 2)); // طباعة الـ entry كاملة
-
-    // تأكد من أن الحدث من صفحة
-    if (body.object === 'page') {
-      body.entry.forEach(entry => {
-        console.log('Received webhook event:', JSON.stringify(entry, null, 2)); // طباعة الـ entry كاملة
-
-        // معالجة البيانات الخاصة بالـ feed
-        if (entry.messaging) {
-          console.log('Received messaging event:', JSON.stringify(entry.messaging, null, 2));
-          entry.messaging.forEach(event => {
-            if (event.message && event.message.text) {
-              console.log('Received message:', event.message.text);
-              // هنا تقدر تعالج وتحفظ البيانات في قاعدة البيانات
-            }
-
-            // إضافة رياكشنات أو تعليقات
-            if (event.reaction) {
-              console.log('Received reaction:', event.reaction);
-              // هنا تقدر تعالج وتحفظ بيانات الرياكشن
-            }
-            
-            if (event.comment) {
-              console.log('Received comment:', event.comment);
-              // هنا تقدر تعالج وتحفظ بيانات التعليق
-            }
-          });
-        }
-      });
-
-      // الرد لفيسبوك إن الحدث استُلم
-      res.status(200).send('EVENT_RECEIVED');
-    } 
-  } catch (error) {
-    console.error('Error processing webhook:', error);
-    res.status(500).send('Error processing webhook');
-  }
-});
 
 
 app.use("*", (req, res, next) => {
