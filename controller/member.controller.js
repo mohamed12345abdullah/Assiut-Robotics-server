@@ -1363,21 +1363,242 @@ const generateEvaluationEmail = (data) => {
     `;
 };
 
+const generateEvaluationWebPage = (data) => {
+    return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Web Committee Evaluation Report</title>
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+    
+        body {
+            background: #1e1e1e;
+            color: #ffffff;
+            padding: 20px;
+            line-height: 1.6;
+        }
+    
+        .report-card {
+            background: #2d2d2d;
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+    
+        .header {
+            background: linear-gradient(135deg, #4834d4, #686de0);
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+    
+        .header::before {
+            content: '<Web/>';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: monospace;
+            font-size: 24px;
+            opacity: 0.3;
+        }
+    
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+    
+        .title h1 {
+            font-size: 28px;
+            background: linear-gradient(to right, #fff, #a8a8a8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    
+        .profile {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 30px;
+            padding: 30px;
+            background: #363636;
+        }
+    
+        .photo-frame {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #4834d4, #686de0);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            box-shadow: 0 4px 20px rgba(72, 52, 212, 0.3);
+        }
+    
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+    
+        .metric {
+            background: #363636;
+            padding: 20px;
+            border-radius: 12px;
+            position: relative;
+        }
+    
+        .metric-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+    
+        .metric-icon {
+            font-size: 24px;
+        }
+    
+        .progress-bar {
+            height: 8px;
+            background: #4834d4;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+    
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #4834d4, #686de0);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+    
+        .technical-section {
+            padding: 30px;
+            background: #363636;
+            margin: 20px 30px;
+            border-radius: 12px;
+        }
+    
+        .awards {
+            padding: 30px;
+        }
+    
+        .award-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+    
+        .award-item {
+            background: #363636;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #4834d4;
+        }
+    
+        @media (max-width: 768px) {
+            .profile {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+    
+            .photo-frame {
+                margin: 0 auto;
+            }
+        }
+        </style>
+    </head>
+    <body>
+        <div class="report-card">
+            <div class="header">
+                <div class="title">
+                    <h1>Web Committee Evaluation</h1>
+                    <span>${data.monthYear || 'March 2025'}</span>
+                </div>
+            </div>
+    
+            <div class="profile">
+                <div class="photo-frame">${data.name.charAt(0)}</div>
+                <div class="info">
+                    <h2>${data.name}</h2>
+                    <p>Web Committee - ${data.role}</p>
+                </div>
+            </div>
+    
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-header">
+                        <span class="metric-icon">⏰</span>
+                        <h3>Tasks Deadline</h3>
+                    </div>
+                    <div class="progress-bar" style="width: ${data.tasksDeadline}%"></div>
+                    <p class="percentage">${data.tasksDeadline}%</p>
+                </div>
+    
+                <div class="metric">
+                    <div class="metric-header">
+                        <span class="metric-icon">🤝</span>
+                        <h3>Behavior</h3>
+                    </div>
+                    <div class="progress-bar" style="width: ${data.behavior}%"></div>
+                    <p class="percentage">${data.behavior}%</p>
+                </div>
+    
+                <div class="metric">
+                    <div class="metric-header">
+                        <span class="metric-icon">👥</span>
+                        <h3>Group Interaction</h3>
+                    </div>
+                    <div class="progress-bar" style="width: ${data.groupInteraction}%"></div>
+                    <p class="percentage">${data.groupInteraction}%</p>
+                </div>
+            </div>
+    
+            <div class="technical-section">
+                <h2>Technical Performance</h2>
+                <div class="progress-bar" style="width: ${data.technicalPerformance}%"></div>
+                <p class="percentage">${data.technicalPerformance}%</p>
+            </div>
+    
+            <div class="awards">
+                <h2>Monthly Achievements</h2>
+                <div class="award-grid">
+                    ${data.awards.map(award => `
+                        <div class="award-item">
+                            <span class="award-icon">🏆</span>
+                            <p>${award || 'No award yet'}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    `;
+};
 
-  // مثال لاستخدام الدالة
-  const evaluationData = {
-    name: "Afnan Zakaria",
-    committee: "Media - design",
-    role: "Member",
-    monthYear: "March 2025",
-    tasksDeadline: 95,
-    behavior: 100,
-    groupInteraction: 100,
-    technicalPerformance: 75,
-    total: 97,
-    awards: ["Best Designer", "Team Player", "Innovator"]
-  };
-  
+
 //   console.log(generateEvaluationEmail(evaluationData));
 
 const JWT= require('jsonwebtoken');
@@ -1405,7 +1626,7 @@ const generateFeedBack = asyncWrapper(async (req, res) => {
     // Your data object
     const evaluationData = {
         name: Member.name,
-        committee: data.committee,
+        committee: Member.committee,
         role: Member.role,
         tasksDeadline: data.tasksDeadline,
         behavior: data.behavior,
@@ -1416,10 +1637,14 @@ const generateFeedBack = asyncWrapper(async (req, res) => {
     };
     
     // Generate the populated template
-    const populatedTemplate = generateEvaluationEmail(evaluationData);
-    
-
-    res.end(populatedTemplate);
+    if(data.committee=='web'){
+        const populatedTemplate = generateEvaluationWebPage(evaluationData);
+        res.end(populatedTemplate);
+    }
+    else{
+        const populatedTemplate = generateEvaluationEmail(evaluationData);
+        res.end(populatedTemplate);
+    }
     // Now you can use populatedTemplate (send it in response, save to file, etc.)
 
     // await sendEmail({
@@ -1432,26 +1657,49 @@ const generateFeedBack = asyncWrapper(async (req, res) => {
     // res.status(200).json({ message: "Evaluation report sent successfully" });
     
 })
-
 const notificationFeedback=async(memberId, token)=>{
     return  `
-        <html> 
-        <head></head>
-        <body>
-            <h1>Feedback Notification</h1>
-            <p>you have received a feedback!</p>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+        </head>
+        <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-top: 20px;">
+                <!-- الهيدر مع لوجو الفريق -->
+                <div style="text-align: center; padding: 20px; background-color: #1a237e; border-radius: 8px;">
+                    <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Assiut Robotics Team</h1>
+                </div>
 
+                <!-- محتوى الإشعار -->
+                <div style="padding: 30px 20px; text-align: center;">
+                    <h2 style="color: #1a237e; margin-bottom: 20px;">تم استلام تقييم جديد!</h2>
+                    <p style="color: #666666; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                        لقد تم إرسال تقييم جديد لك. يمكنك الاطلاع على التفاصيل من خلال الضغط على الزر أدناه.
+                    </p>
 
-            <div class="feedback">
-                <h2>Feedback</h2>
-                <p>click on the link to show your feedback</p>
+                    <!-- زر عرض التقييم -->
+                    <a href="https://assiut-robotics-zeta.vercel.app/members/sendFeedBack/${memberId}/${token}"
+                       style="display: inline-block; padding: 12px 30px; background-color: #1a237e; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 20px;">
+                        عرض التقييم
+                    </a>
+                </div>
+
+                <!-- الفوتر -->
+                <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eeeeee;">
+                    <p style="color: #999999; font-size: 14px;">
+                        هذا البريد الإلكتروني تم إرساله من فريق Assiut Robotics
+                    </p>
+                    <div style="margin-top: 10px;">
+                        <a href="#" style="color: #1a237e; text-decoration: none; margin: 0 10px;">الموقع الإلكتروني</a>
+                        <a href="#" style="color: #1a237e; text-decoration: none; margin: 0 10px;">تواصل معنا</a>
+                    </div>
+                </div>
             </div>
-
-            <a href="https://assiut-robotics-zeta.vercel.app/members/sendFeedBack/${memberId}/${token}">View Feedback</a>
-        </body> 
+        </body>
         </html>
     `
 }
+
 
 
 const sendEmailFeedBack=asyncWrapper(async (req, res) => {
