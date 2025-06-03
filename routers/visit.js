@@ -53,6 +53,12 @@ router.route("/")
 
 
 router.route("/members")
+
+
+
+
+
+
     .get(asyncWrapper(async (req, res) => {
         // Get members and their IPs
         const members = await Member.find({}, { email: 1, visits: 1, name: 1, role: 1 ,phoneNumber: 1, committee: 1, gender: 1 })

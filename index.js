@@ -11,6 +11,7 @@ const visitRouter=require('./routers/visit.js')
 const electricRouter = require('./routers/electric');
 const announcementRouter = require('./routers/announcement');
 const meetingRouter = require('./routers/meeting');
+const guestRouter = require('./routers/guest.js');
 // status text
 const httpStatusText = require('./utils/httpStatusText');
 const webhookRoutes = require('./routers/webhook.router.js');
@@ -43,6 +44,7 @@ app.use("/visitor",visitRouter);
 app.use("/electric", electricRouter);
 app.use("/announcement", announcementRouter);
 app.use("/meeting", meetingRouter);
+app.use('/guest', guestRouter);
 app.use('/webhook', webhookRoutes);
 
 // const committeeRouter = require('./routers/committee.router');
