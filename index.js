@@ -1,5 +1,5 @@
 require('dotenv').config();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 
 const express = require("express");
@@ -16,6 +16,11 @@ const guestRouter = require('./routers/guest.js');
 const httpStatusText = require('./utils/httpStatusText');
 const webhookRoutes = require('./routers/webhook.router.js');
 
+// New routes for tracks, courses, tasks, and people
+const trackRouter = require('./routers/track.router.js');
+const courseRouter = require('./routers/course.router.js');
+const taskRouter = require('./routers/task.router.js');
+const personRouter = require('./routers/person.router.js');
 
 //cors
 
@@ -46,6 +51,12 @@ app.use("/announcement", announcementRouter);
 app.use("/meeting", meetingRouter);
 app.use('/guest', guestRouter);
 app.use('/webhook', webhookRoutes);
+
+// New routes
+app.use('/tracks', trackRouter);
+app.use('/courses', courseRouter);
+app.use('/tasks', taskRouter);
+app.use('/people', personRouter);
 
 // const committeeRouter = require('./routers/committee.router');
 // app.use('/api/committees', committeeRouter);
